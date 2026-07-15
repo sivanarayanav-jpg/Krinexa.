@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Krinexa Agri</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="chart.umd.min.js"></script>
 <style>
   :root{--primary:#2E7D32;--pc:#B7F1B5;--onpc:#072100;--surface:#FBFDF7;--s1:#F1F5EC;--s2:#E9F0E3;--s3:#E2EBDB;--on:#1A1C19;--onv:#43483E;--outline:#73796E;--ov:#C3C8BC;--err:#BA1A1A;--errc:#FFDAD6;--warn:#F9A825;--info:#1565C0;--rs:8px;--rm:12px;--rl:16px;--sh1:0 1px 3px rgba(0,0,0,.16);--sh3:0 4px 12px rgba(0,0,0,.18);--fs:1}
   .large-font{--fs:1.18}
@@ -760,7 +760,11 @@ render();
   const _finishSignup=finishSignup;
   finishSignup=function(){
     _finishSignup();
-    if(farmerProfile)j('POST','/api/farmers',{id:farmerProfile.fid,name:farmerProfile.name,mobile:farmerProfile.mobile,email:farmerProfile.email||'',village:farmerProfile.village,mandal:farmerProfile.mandal,dist:farmerProfile.dist,pin:farmerProfile.pin,crop:[farmerProfile.cropIcon||'🌱',farmerProfile.crop],fpo:farmerProfile.fpo,acres:farmerProfile.acres,orders:0,adv:0,approved:true}).then(r=>{if(r&&r.token){window.KRX_AUTH={token:r.token,role:'farmer'};try{localStorage.setItem('krx_auth',JSON.stringify(window.KRX_AUTH));}catch(e){}}});
+    if(farmerProfile)j('POST','/api/farmers',{id:farmerProfile.fid,name:farmerProfile.name,mobile:farmerProfile.mobile,email:farmerProfile.email||'',village:farmerProfile.village,mandal:farmerProfile.mandal,dist:farmerProfile.dist,pin:farmerProfile.pin,crop:[farmerProfile.cropIcon||'🌱',farmerProfile.crop],fpo:farmerProfile.fpo,acres:farmerProfile.acres,orders:0,adv:0,approved:true}).then(r=>{
+      if(r&&r.token){window.KRX_AUTH={token:r.token,role:'farmer'};try{localStorage.setItem('krx_auth',JSON.stringify(window.KRX_AUTH));}catch(e){}}
+      else if(r&&r.error==='mobile_exists'){farmerProfile=null;try{localStorage.removeItem('krinexa_state_v1');}catch(e){}toast('⚠️ ఈ మొబైల్ నంబర్ ఇప్పటికే నమోదైంది — దయచేసి లాగిన్ చేయండి');setTimeout(()=>{S.app='farmer';go('login');},1800);}
+      else if(r&&r.error==='bad_mobile'){toast('⚠️ సరైన 10-అంకెల మొబైల్ నంబర్ ఇవ్వండి');}
+    });
   };
 
   const _placeOrder=placeOrder;
@@ -1121,6 +1125,13 @@ render();
     }catch(e){}
   };
 })();
+</script>
+
+<!-- ===== SERVICE WORKER: instant load + true offline (rural-ready PWA) ===== -->
+<script>
+if('serviceWorker' in navigator && location.origin.startsWith('http')){
+  window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});
+}
 </script>
 </body>
 </html>

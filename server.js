@@ -200,6 +200,12 @@ const server = http.createServer((req, res) => {
         if (coll) {
           data.createdAt = new Date().toISOString();
           if (data.id && db[coll].some(x => x.id === data.id)) return send(res, 200, { ok: true, dup: true });
+          /* one mobile number = one farmer account (keeps OTP login unambiguous) */
+          if (coll === 'farmers') {
+            const mob = digits(data.mobile);
+            if (mob.length < 10) return send(res, 200, { ok: false, error: 'bad_mobile' });
+            if (db.farmers.some(f => digits(f.mobile) === mob)) return send(res, 200, { ok: false, error: 'mobile_exists' });
+          }
           db[coll].unshift(data);
           /* order → auto-deduct product stock (multi-item carts supported) */
           if (coll === 'orders') {

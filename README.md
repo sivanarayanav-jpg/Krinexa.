@@ -56,7 +56,10 @@ Admin → Employee Mgmt → **＋ Add Employee** now creates a real login (email
 
 ## Built for weak rural networks
 
-If the connection drops, farmer and staff actions (orders, tickets, updates) are **queued on the device and sent automatically** when the network returns — a toast confirms both. Dashboards merge live status changes (e.g. an agronomist's recommendation reaches the farmer's app and the field staff queue within ~25 seconds, on every device).
+- **Works fully offline.** The app is a real PWA with a service worker (`sw.js`): once opened, it loads instantly and still opens with no signal. Chart.js is bundled locally (`chart.umd.min.js`) — nothing loads from the internet, so there is no "needs internet on first load" caveat anymore.
+- If the connection drops, farmer and staff actions (orders, tickets, updates) are **queued on the device and sent automatically** when the network returns — a toast confirms both.
+- Dashboards merge live status changes (e.g. an agronomist's recommendation reaches the farmer's app and the field staff queue within ~25 seconds, on every device).
+- **One mobile number = one farmer account** — duplicate registrations are refused, so OTP login is never ambiguous.
 
 ## Deploy to the internet (when ready)
 
