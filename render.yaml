@@ -12,6 +12,16 @@ services:
     envVars:
       - key: NODE_VERSION
         value: "20"
+      # --- Real SMS OTPs (optional): set these in the Render dashboard ---
+      # Render → your service → Environment → Add Environment Variable.
+      # Add SMS_PROVIDER = msg91, then MSG91_AUTHKEY and MSG91_TEMPLATE_ID.
+      # (Leave them unset to keep demo OTPs shown on screen.)
+      # - key: SMS_PROVIDER
+      #   value: msg91
+      # - key: MSG91_AUTHKEY
+      #   sync: false        # set the secret value in the dashboard, not in git
+      # - key: MSG91_TEMPLATE_ID
+      #   sync: false
     # For a real pilot (so farmer data survives redeploys), upgrade to a paid
     # plan and add a persistent disk mounted at /opt/render/project/src :
     # disk:

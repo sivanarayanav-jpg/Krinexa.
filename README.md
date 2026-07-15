@@ -31,12 +31,13 @@ Wrong passwords are rejected; passwords are stored only as scrypt hashes (never 
 
 ## Sending real SMS OTPs
 
-Copy `sms-config.example.json` to `sms-config.json`, fill in your gateway details, and restart the server — demo OTPs disappear and farmers receive the code by SMS:
+**On Render (cloud):** in your service → **Environment** → add `SMS_PROVIDER = msg91`, `MSG91_AUTHKEY = <your key>`, `MSG91_TEMPLATE_ID = <your template>`. No secret ever goes into GitHub. Save → Render redeploys → farmers get real SMS.
 
+**Locally:** copy `sms-config.example.json` to `sms-config.json`, fill in your gateway details, restart the server:
 - **MSG91** (most common in India): `{ "provider": "msg91", "authKey": "...", "templateId": "..." }`
 - **Any other gateway** via a webhook you control: `{ "provider": "webhook", "url": "https://..." }` — the server POSTs `{mobile, otp, message}` to it.
 
-Until that file exists, the server prints OTPs in its window and shows them on screen as "demo OTP" so testing works without an SMS account.
+With neither set, the server prints OTPs in its window and shows them on screen as "demo OTP" so testing works without an SMS account.
 
 ## Product catalog & shopping (live)
 

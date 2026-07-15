@@ -23,12 +23,24 @@ const SESSION_DAYS = 30;
 const DEFAULT_PASSWORD = 'Krinexa@123';
 
 /*
- * SMS gateway (optional). Create sms-config.json next to this file to send
- * real SMS OTPs — see sms-config.example.json. While that file is absent,
- * the app runs in demo mode: OTPs print here and show on screen.
+ * SMS gateway (optional). Two ways to configure real SMS OTPs:
+ *   1. Cloud (Render etc.): set environment variables — SMS_PROVIDER=msg91,
+ *      MSG91_AUTHKEY=..., MSG91_TEMPLATE_ID=...  (or SMS_PROVIDER=webhook,
+ *      SMS_WEBHOOK_URL=...). No secret lives in the repo this way.
+ *   2. Local: create sms-config.json next to this file (see the example).
+ * With neither, the app runs in demo mode: OTPs print here and show on screen.
  */
 let SMS = null;
-try { SMS = JSON.parse(fs.readFileSync(path.join(ROOT, 'sms-config.json'), 'utf8')); } catch (e) {}
+if (process.env.SMS_PROVIDER) {
+  SMS = {
+    provider: process.env.SMS_PROVIDER,
+    authKey: process.env.MSG91_AUTHKEY,
+    templateId: process.env.MSG91_TEMPLATE_ID,
+    url: process.env.SMS_WEBHOOK_URL
+  };
+} else {
+  try { SMS = JSON.parse(fs.readFileSync(path.join(ROOT, 'sms-config.json'), 'utf8')); } catch (e) {}
+}
 const SMS_CONNECTED = !!(SMS && SMS.provider);
 function sendSms(mobile, otp) {
   if (!SMS_CONNECTED) return;
