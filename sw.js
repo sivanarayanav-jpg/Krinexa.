@@ -3,7 +3,7 @@
  * network-first for page navigation (so updates arrive when online, and the
  * cached app still opens with no signal). API calls (/api/) always go to the
  * network and are NEVER cached — real data must stay live. */
-const CACHE = 'krinexa-v1';
+const CACHE = 'krinexa-v2';
 const SHELL = [
   './',
   './index.html',

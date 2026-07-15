@@ -266,7 +266,17 @@ const server = http.createServer((req, res) => {
         const coll = p.split('/')[2];
         const id = p.slice(p.lastIndexOf('/') + 1);
         const item = db[coll].find(x => x.id === id);
-        if (item) { Object.assign(item, data || {}); persist(); }
+        if (item) {
+          /* cancelling an order puts its stock back (once) */
+          if (coll === 'orders' && data && data.status === 'Cancelled' && item.status !== 'Cancelled') {
+            (Array.isArray(item.lineItems) ? item.lineItems : []).forEach(it => {
+              const pr = db.products.find(x => x.id === it.productId);
+              if (pr) pr.stk = (pr.stk || 0) + (it.qty || 1);
+            });
+          }
+          Object.assign(item, data || {});
+          persist();
+        }
         return send(res, 200, { ok: !!item });
       }
 

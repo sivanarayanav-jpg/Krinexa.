@@ -957,7 +957,7 @@ render();
     const names=cart.map(it=>{const p=PRODUCTS.find(x=>x.id===it.id)||{name:''};return p.name+' × '+it.qty;}).join(', ');
     const lineItems=cart.map(it=>({productId:it.id,qty:it.qty}));
     const id='#A-'+(2380+myOrders.length+1);
-    const newOrd={id:id,product:names,items:names,amt:tot,status:'Booked',eta:'రేపు',payStatus:isCOD?'COD Pending':'Paid'};
+    const newOrd={id:id,product:names,items:names,amt:tot,status:'Booked',eta:'రేపు',payStatus:isCOD?'COD Pending':'Paid',lineItems:lineItems};
     myOrders.unshift(newOrd);
     lineItems.forEach(li=>{const p=PRODUCTS.find(x=>x.id===li.productId);if(p)p.stk=Math.max(0,p.stk-li.qty);});
     ORDERS.unshift({id:id,farmer:farmerProfile?farmerProfile.name:'రాములు రెడ్డి',village:farmerProfile?farmerProfile.village:'Kondapur',items:cartCount()+' వస్తువులు',amt:'₹'+tot,status:'Booked',ftype:farmerProfile&&farmerProfile.fpo==='Individual'?'Individual':'FPO',product:names,payStatus:newOrd.payStatus,lineItems:lineItems,qty:cartCount()});
@@ -1120,6 +1120,90 @@ render();
           const btns=pan.querySelectorAll('button');
           if(btns[0])btns[0].onclick=function(){krxPrintTable(sets[i][0],sets[i][1]());};
           if(btns[1])btns[1].onclick=function(){krxDownloadCSV('Krinexa_'+sets[i][0].replace(/ /g,'_'),sets[i][1]());};
+        });
+      }
+    }catch(e){}
+  };
+})();
+</script>
+
+<!-- ===== ORDER CANCELLATION + REAL NOTIFICATIONS LAYER ===== -->
+<script>
+(function(){
+  function myName(){return farmerProfile?farmerProfile.name:'రాములు';}
+
+  /* notifications derived from the farmer's real orders, tickets and broadcasts */
+  window.krxNotifs=function(){
+    const list=[];
+    ADV.filter(a=>a.farmer===myName()).forEach(t=>{
+      if(t.status==='Recommendation Provided'||t.status==='Closed'||(t.remarks&&t.remarks.length))
+        list.push({ic:'✅',bg:'#2E7D32',fg:'#fff',t:'నిపుణుడి సమాధానం వచ్చింది',d:t.crop+(t.plotArea?' · '+t.plotArea:''),tm:'ఇప్పుడే',go:'advdetail'});
+    });
+    myOrders.forEach(o=>{
+      if(o.status==='Dispatched')list.push({ic:'🚚',bg:'#FFF3CD',fg:'#664d03',t:'ఆర్డర్ రవాణా అయింది',d:o.items,tm:o.eta||'',go:'tracking'});
+      else if(o.status==='Delivered')list.push({ic:'📦',bg:'#E8F5E9',fg:'#1B5E20',t:'డెలివరీ పూర్తయింది',d:o.items,tm:'',go:'tracking'});
+      else if(o.status==='Cancelled')list.push({ic:'❌',bg:'#FFEBEE',fg:'#B71C1C',t:'ఆర్డర్ రద్దు చేయబడింది',d:o.items,tm:'',go:'orderhist'});
+      else if(o.status==='Booked')list.push({ic:'🛒',bg:'#E3F2FD',fg:'#0D47A1',t:'ఆర్డర్ బుక్ అయింది',d:o.items,tm:o.eta||'',go:'tracking'});
+    });
+    BROADCASTS.forEach(b=>list.push({ic:b.img||'🌧️',bg:'#FFF3CD',fg:'#664d03',t:'వాతావరణ హెచ్చరిక',d:(b.msg||'').slice(0,44),tm:b.date||'',go:'broadcast:'+b.id}));
+    return list;
+  };
+  function seenCount(){try{return +localStorage.getItem('krx_notif_seen')||0;}catch(e){return 0;}}
+  function unread(){return Math.max(0,krxNotifs().length-seenCount());}
+  function markSeen(){try{localStorage.setItem('krx_notif_seen',String(krxNotifs().length));}catch(e){}}
+  window.markNotifOpen=function(target){
+    markSeen();
+    if(target.indexOf('broadcast:')===0)go('broadcastdetail',{id:target.split(':')[1]});
+    else go(target,null,['advdetail','tracking'].indexOf(target)>=0);
+  };
+
+  /* order cancellation (before dispatch): restores stock, syncs to server */
+  window.krxCancelOrder=function(id){
+    $('modalRoot').innerHTML=`<div class="modal"><div class="bx" style="max-width:360px"><h3 class="te" style="margin:0 0 8px">ఆర్డర్ రద్దు చేయాలా?</h3><p class="te" style="font-size:13px;color:var(--onv)">${id} — రద్దు చేసిన తర్వాత తిరిగి పొందలేరు.</p><div style="display:flex;gap:10px;margin-top:14px"><button class="btn dl te" style="margin-top:0" onclick="krxConfirmCancel('${id}')">అవును, రద్దు చేయండి</button><button class="btn gh te" onclick="closeModal()">వద్దు</button></div></div></div>`;
+  };
+  window.krxConfirmCancel=function(id){
+    const o=myOrders.find(x=>x.id===id);
+    if(o){(o.lineItems||[]).forEach(li=>{const p=PRODUCTS.find(x=>x.id===li.productId);if(p)p.stk+=li.qty;});o.status='Cancelled';}
+    const oo=ORDERS.find(x=>x.id===id);if(oo)oo.status='Cancelled';
+    if(window.krxJ)window.krxJ('PATCH','/api/orders/'+encodeURIComponent(id),{status:'Cancelled'});
+    closeModal();notify('ఆర్డర్ '+id+' రద్దు చేయబడింది · స్టాక్ తిరిగి జమ అయింది');go('orderhist');
+  };
+
+  const _rN=render;
+  render=function(){
+    _rN();
+    try{
+      /* home bell badge shows real unread count */
+      if(S.app==='farmer'&&S.screen==='home'){
+        const badge=document.querySelector('.phone .ab .ib .badge');
+        if(badge){const u=unread();if(u>0){badge.textContent=u;badge.style.display='';}else badge.style.display='none';}
+      }
+      /* notifications screen shows the real, event-driven list */
+      if(S.app==='farmer'&&S.screen==='notif'){
+        const list=krxNotifs(),body=document.querySelector('.phone .body');
+        if(body)body.innerHTML=list.length?list.map(i=>`<div class="nt" onclick="markNotifOpen('${i.go}')"><div class="ni2" style="background:${i.bg};color:${i.fg}">${i.ic}</div><div class="nb"><b class="te">${i.t}</b><p class="te">${i.d}</p></div><span class="tm te">${i.tm}</span></div>`).join(''):empty('🔔','కొత్త నోటిఫికేషన్లు లేవు','',null);
+        markSeen();
+      }
+      /* cancel button on the tracking screen while the order can still be cancelled */
+      if(S.app==='farmer'&&S.screen==='tracking'&&myOrders.length){
+        const o=myOrders[0];
+        if(['Booked','Confirmed'].indexOf(o.status)>=0){
+          const body=document.querySelector('.phone .body');
+          if(body&&!body.querySelector('.krx-cancel')){
+            const b=document.createElement('button');b.className='btn dl te krx-cancel';b.style.marginTop='10px';b.textContent='❌ ఆర్డర్ రద్దు చేయండి';
+            b.onclick=function(){krxCancelOrder(o.id);};body.appendChild(b);
+          }
+        }
+      }
+      /* order-history cards: cancel link for still-cancellable orders */
+      if(S.app==='farmer'&&S.screen==='orderhist'){
+        const cards=document.querySelectorAll('.phone .body .card.fl');
+        cards.forEach((card,i)=>{
+          const o=myOrders[i];
+          if(o&&['Booked','Confirmed'].indexOf(o.status)>=0&&!card.querySelector('.krx-cancel')){
+            const b=document.createElement('button');b.className='btn dl te krx-cancel';b.style.marginTop='8px';b.style.padding='8px';b.textContent='❌ రద్దు చేయండి';
+            b.onclick=function(ev){ev.stopPropagation();krxCancelOrder(o.id);};card.appendChild(b);
+          }
         });
       }
     }catch(e){}

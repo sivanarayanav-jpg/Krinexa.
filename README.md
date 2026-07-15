@@ -47,6 +47,11 @@ Until that file exists, the server prints OTPs in its window and shows them on s
 
 Admin → Employee Mgmt → **＋ Add Employee** now creates a real login (email or Employee-ID + password, role selectable: Field Officer / Agronomist / FPO Manager / Admin). Only Admin can create logins; duplicate emails are refused; new staff can sign in immediately and change their password with 🔑.
 
+## Orders & notifications
+
+- **Cancel an order:** while an order is still *Booked/Confirmed* (before dispatch), the farmer sees a **Cancel Order** button on the tracking and order-history screens. Cancelling restores the product stock and syncs to every device.
+- **Real notifications:** the farmer's 🔔 bell reflects actual events — an expert's reply to their question, and each order's booked/dispatched/delivered/cancelled status — with an unread count that clears when they open the list.
+
 ## Crop photos, reports, and safety
 
 - **Photos:** farmers attach up to 3 real photos (camera or gallery) when asking an expert; images are compressed on the phone and the agronomist sees them on the ticket.
