@@ -1,0 +1,20 @@
+# One-click deploy config for Render (https://render.com).
+# In Render: New + → Blueprint → connect this repo → Apply.
+# You get a public https://…onrender.com link that works on any phone, anywhere.
+services:
+  - type: web
+    name: krinexa-agri
+    runtime: node
+    plan: free
+    buildCommand: ""          # zero dependencies — nothing to build
+    startCommand: node server.js
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+    # For a real pilot (so farmer data survives redeploys), upgrade to a paid
+    # plan and add a persistent disk mounted at /opt/render/project/src :
+    # disk:
+    #   name: krinexa-data
+    #   mountPath: /opt/render/project/src
+    #   sizeGB: 1

@@ -1,0 +1,13 @@
+# Local database and its backups — never commit real farmer/staff data
+krinexa-db.json
+backups/
+
+# Secrets — SMS gateway keys
+sms-config.json
+
+# Logs and OS/editor cruft
+server-log.txt
+*.log
+node_modules/
+.DS_Store
+Thumbs.db
