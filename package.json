@@ -1,0 +1,12 @@
+{
+  "name": "krinexa-agri",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Krinexa Agri — 5-role farmer advisory & agri-inputs platform (zero-dependency)",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2E7D32">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>Krinexa Agri</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{--primary:#2E7D32;--pc:#B7F1B5;--onpc:#072100;--surface:#FBFDF7;--s1:#F1F5EC;--s2:#E9F0E3;--s3:#E2EBDB;--on:#1A1C19;--onv:#43483E;--outline:#73796E;--ov:#C3C8BC;--err:#BA1A1A;--errc:#FFDAD6;--warn:#F9A825;--info:#1565C0;--rs:8px;--rm:12px;--rl:16px;--sh1:0 1px 3px rgba(0,0,0,.16);--sh3:0 4px 12px rgba(0,0,0,.18);--fs:1}
+  .large-font{--fs:1.18}
+  .contrast{--on:#000;--onv:#000;--outline:#000;--surface:#fff;--s1:#fff;--ov:#000}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;font-family:'Segoe UI',Roboto,'Noto Sans Telugu',system-ui,sans-serif;background:#DCE5D8;color:var(--on);overflow-x:hidden}
+  .te{font-family:'Noto Sans Telugu','Segoe UI',sans-serif}
+  .topbar{position:sticky;top:0;z-index:60;background:#1A1C19;color:#fff;display:flex;gap:8px;align-items:center;padding:9px 14px;flex-wrap:wrap}
+  .topbar b{font-size:14px}
+  .seg{display:flex;background:#2c2f2b;border-radius:999px;padding:3px;gap:2px;flex-wrap:wrap}
+  .seg button{border:0;background:transparent;color:#cfd4cb;padding:7px 12px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer}
+  .seg button.on{background:var(--primary);color:#fff}
+  .tgl{margin-left:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .tbtn{border:0;background:#2c2f2b;color:#cfd4cb;border-radius:999px;padding:6px 11px;font-size:12px;cursor:pointer;display:flex;gap:5px;align-items:center}
+  .tbtn.act{background:var(--primary);color:#fff}
+  .onpill{font-weight:700}.onpill.off{color:#FFB4AB}
+  .stage{display:flex;justify-content:center;padding:20px 12px 40px;min-height:100vh}
+  .phone{width:392px;max-width:100%;height:802px;background:var(--surface);border-radius:36px;box-shadow:var(--sh3),0 0 0 11px #11130f,0 0 0 13px #2c2f2b;position:relative;overflow:hidden;display:flex;flex-direction:column}
+  .sb{height:30px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:12px;font-weight:600;flex:0 0 auto}
+  .sb .net{display:flex;gap:6px;align-items:center}
+  .ofbar{font-size:12px;padding:7px 16px;display:flex;gap:8px;align-items:center;flex:0 0 auto}
+  .ofbar.on{background:#E8F5E9;color:#1B5E20}.ofbar.off{background:#FFDAD6;color:#410002}
+  .ab{display:flex;align-items:center;gap:10px;padding:10px 16px;flex:0 0 auto;background:var(--surface)}
+  .ab .ti{font-size:calc(20px*var(--fs));font-weight:600}.ab .su{font-size:calc(12px*var(--fs));color:var(--onv)}
+  .ib{width:42px;height:42px;border-radius:50%;border:0;background:transparent;cursor:pointer;display:grid;place-items:center;font-size:20px;color:var(--on);position:relative}
+  .ib:hover{background:var(--s2)}
+  .badge{position:absolute;top:5px;right:5px;background:var(--err);color:#fff;font-size:10px;min-width:16px;height:16px;border-radius:8px;display:grid;place-items:center;padding:0 3px;font-weight:700}
+  .body{flex:1 1 auto;overflow-y:auto;padding:6px 16px 92px}.body::-webkit-scrollbar{width:0}
+  .body.nn{padding-bottom:20px}
+  .card{background:var(--s1);border:1px solid transparent;border-radius:var(--rl);padding:14px;margin:12px 0;box-shadow:var(--sh1)}
+  .card.fl{box-shadow:none;border-color:var(--ov)}
+  .st{font-size:calc(15px*var(--fs));font-weight:700;margin:16px 2px 4px}
+  .grt{font-size:calc(21px*var(--fs));font-weight:600;margin:6px 0 2px}
+  .idc{display:inline-block;background:#E8F5E9;color:#1B5E20;font-weight:700;font-size:12px;padding:3px 10px;border-radius:999px;letter-spacing:.5px}
+  .crops{display:flex;gap:12px;overflow-x:auto;padding:4px 0;flex-wrap:wrap}.crops::-webkit-scrollbar{height:0}
+  .cc{min-width:108px;background:var(--pc);color:var(--onpc);border-radius:var(--rl);padding:13px;text-align:center;cursor:pointer;box-shadow:var(--sh1)}
+  .cc.sel{outline:3px solid var(--primary)}
+  .cc .e{font-size:30px}.cc .n{font-weight:700;font-size:calc(14px*var(--fs));margin-top:4px}.cc .sg{font-size:11px;opacity:.8}
+  .addc{min-width:76px;border:2px dashed var(--outline);border-radius:var(--rl);display:grid;place-items:center;color:var(--onv);cursor:pointer;font-size:13px}
+  .adv{background:var(--surface);border:1px solid var(--ov);border-radius:var(--rl);overflow:hidden;margin:10px 0;cursor:pointer;box-shadow:var(--sh1)}
+  .adv .img{height:116px;background:linear-gradient(135deg,#a5d6a7,#66bb6a);display:grid;place-items:center;font-size:44px}
+  .adv .ct{padding:12px 14px}
+  .tag{display:inline-flex;gap:5px;align-items:center;background:var(--errc);color:#410002;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
+  .adv h4{margin:8px 0 4px;font-size:calc(16px*var(--fs))}.adv p{margin:0;font-size:calc(13px*var(--fs));color:var(--onv);line-height:1.5}
+  .ostrip{display:flex;align-items:center;gap:12px;background:var(--s2);border-radius:var(--rl);padding:12px 14px;margin:12px 0;cursor:pointer}
+  .fab{position:absolute;right:18px;bottom:82px;background:var(--primary);color:#fff;border:0;border-radius:var(--rl);padding:15px 19px;font-weight:700;font-size:calc(15px*var(--fs));display:flex;gap:9px;align-items:center;box-shadow:var(--sh3);cursor:pointer;z-index:5}
+  .bn{position:absolute;bottom:0;left:0;right:0;height:74px;background:var(--s2);display:flex;justify-content:space-around;align-items:center;padding-bottom:8px;flex:0 0 auto;z-index:4}
+  .ni{display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:transparent;cursor:pointer;color:var(--onv);font-size:11px;font-weight:600;padding:4px 2px}
+  .ni .pl{width:54px;height:30px;border-radius:999px;display:grid;place-items:center;font-size:20px}
+  .ni.on{color:var(--primary)}.ni.on .pl{background:var(--pc);color:var(--onpc)}
+  .btn{width:100%;background:var(--primary);color:#fff;border:0;border-radius:999px;padding:15px;font-size:calc(16px*var(--fs));font-weight:700;cursor:pointer;margin-top:10px}
+  .btn:active{transform:scale(.99)}.btn.tonal{background:var(--pc);color:var(--onpc)}.btn.out{background:transparent;color:var(--primary);border:1.5px solid var(--outline)}.btn.gh{background:transparent;color:var(--onv);border:0}.btn.dl{background:var(--err)}
+  .fld{margin:13px 0}.fld label{font-size:calc(13px*var(--fs));color:var(--onv);font-weight:600;display:block;margin-bottom:6px}
+  .opt-t{font-size:11px;color:var(--outline);font-weight:500}
+  .inp{display:flex;align-items:center;gap:8px;border:1.5px solid var(--outline);border-radius:var(--rs);padding:13px;font-size:16px;background:var(--surface)}
+  .inp input,.inp select{border:0;outline:0;flex:1;font-size:calc(16px*var(--fs));background:transparent;font-family:inherit}
+  .chiprow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .chip{padding:8px 13px;border-radius:999px;border:1.5px solid var(--outline);font-size:13px;cursor:pointer;background:var(--surface)}
+  .chip.on{background:var(--pc);border-color:transparent;color:var(--onpc);font-weight:700}
+  .tg2{display:flex;gap:10px;margin-top:6px}.tg2 .o{flex:1;border:2px solid var(--ov);border-radius:var(--rm);padding:15px 10px;text-align:center;font-weight:600;cursor:pointer}.tg2 .o.on{border-color:var(--primary);background:var(--pc);color:var(--onpc)}.tg2 .o .ic{font-size:25px;display:block;margin-bottom:3px}
+  .steps{display:flex;gap:6px;padding:10px 16px 4px}.steps .d{flex:1;height:5px;border-radius:3px;background:var(--ov)}.steps .d.on{background:var(--primary)}
+  .mgr{background:#EEF6FF;border:1px solid #BBDEFB;border-radius:var(--rm);padding:12px;margin:12px 0}.mgr b{font-size:13px;color:#0D47A1}.mgr .r{font-size:12px;color:#1565C0;margin-top:4px}
+  .mic{width:116px;height:116px;border-radius:50%;background:var(--primary);color:#fff;border:0;font-size:42px;display:grid;place-items:center;margin:18px auto;cursor:pointer;box-shadow:var(--sh3)}
+  .mic.rec{animation:pl 1.3s infinite}@keyframes pl{0%{box-shadow:0 0 0 0 rgba(46,125,50,.5)}70%{box-shadow:0 0 0 22px rgba(46,125,50,0)}100%{box-shadow:0 0 0 0 rgba(46,125,50,0)}}
+  .wave{height:30px;display:flex;gap:3px;align-items:center;justify-content:center}.wave span{width:4px;background:var(--primary);border-radius:2px;animation:w 1s infinite}@keyframes w{0%,100%{height:8px}50%{height:26px}}
+  .pt{width:60px;height:60px;border-radius:var(--rs);background:linear-gradient(135deg,#a5d6a7,#66bb6a);display:grid;place-items:center;font-size:24px}
+  .vbar{display:flex;gap:8px;align-items:center;background:#E8F5E9;border-radius:999px;padding:8px 12px;margin:10px 0}
+  .vbar button{border:0;background:var(--primary);color:#fff;border-radius:999px;padding:8px 14px;font-weight:600;font-size:13px;cursor:pointer;display:flex;gap:6px;align-items:center}
+  .vbar .vb2{background:#fff;color:var(--primary);border:1px solid var(--primary)}
+  .vbar .prog{flex:1;height:6px;background:#C8E6C9;border-radius:3px;overflow:hidden}.vbar .prog i{display:block;height:100%;width:0;background:var(--primary);transition:width .2s linear}
+  .tl{display:flex;gap:14px}.tl .col{display:flex;flex-direction:column;align-items:center}
+  .tl .nd{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;background:var(--s3);color:var(--outline);border:2px solid var(--ov)}
+  .tl.dn .nd{background:var(--primary);color:#fff;border-color:var(--primary)}.tl.cu .nd{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 0 0 4px var(--pc)}
+  .tl .ln{flex:1;width:3px;background:var(--ov);margin:2px 0}.tl.dn .ln{background:var(--primary)}
+  .tl .inf{padding-bottom:18px}.tl .inf b{font-size:calc(15px*var(--fs))}.tl .inf span{display:block;font-size:12px;color:var(--onv);margin-top:2px}
+  .prod{display:flex;gap:12px;align-items:center;border:1px solid var(--ov);border-radius:var(--rm);padding:12px;margin:10px 0;cursor:pointer}
+  .prod .pi{width:52px;height:52px;border-radius:var(--rs);background:#E8F5E9;display:grid;place-items:center;font-size:26px}
+  .prod .pn{flex:1}.prod .pn b{font-size:calc(15px*var(--fs))}.prod .pn .pr{color:var(--primary);font-weight:700}
+  .addb{background:var(--primary);color:#fff;border:0;border-radius:999px;padding:9px 14px;font-weight:700;cursor:pointer;font-size:13px}
+  .sbad{font-size:11px;padding:2px 8px;border-radius:999px;font-weight:700}.sb-ok{background:#E8F5E9;color:#1B5E20}.sb-no{background:#FFEBEE;color:#B71C1C}
+  .alert{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:var(--rm);margin:12px 0;font-size:calc(13px*var(--fs));line-height:1.5}
+  .al-w{background:var(--errc);color:#410002}.al-i{background:#E3F2FD;color:#0D47A1}.al-ok{background:#E8F5E9;color:#1B5E20}
+  .pd{border-top:1px solid var(--ov);padding:11px 0}.pd b{font-size:13px;display:flex;gap:7px;align-items:center}.pd p{margin:4px 0 0;font-size:calc(13px*var(--fs));color:var(--onv);line-height:1.5}
+  .nt{display:flex;gap:12px;padding:12px;border-bottom:1px solid var(--ov);align-items:flex-start;cursor:pointer}
+  .nt .ni2{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:20px;flex:0 0 auto}
+  .nt .nb b{font-size:14px}.nt .nb p{margin:3px 0 0;font-size:12px;color:var(--onv)}.nt .tm{font-size:11px;color:var(--outline);margin-left:auto}
+  .kpis{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+  .kpi{background:var(--s1);border-radius:var(--rl);padding:14px;box-shadow:var(--sh1);cursor:pointer}.kpi .n{font-size:calc(23px*var(--fs));font-weight:800;color:var(--primary)}.kpi .l{font-size:12px;color:var(--onv)}
+  .es{text-align:center;padding:46px 24px;color:var(--onv)}.es .ic{font-size:54px;opacity:.5}.es h4{margin:14px 0 4px;font-size:calc(17px*var(--fs));color:var(--on)}.es p{margin:0;font-size:13px}
+  .sk{background:linear-gradient(90deg,#e8ece4 25%,#f3f6ef 37%,#e8ece4 63%);background-size:400% 100%;animation:shim 1.3s infinite;border-radius:8px}
+  @keyframes shim{0%{background-position:100% 0}100%{background-position:-100% 0}}
+  .skrow{display:flex;gap:12px;align-items:center;margin:12px 0}.skrow .a{width:52px;height:52px;border-radius:10px}.skrow .b{flex:1}.skrow .b .l1{height:14px;margin-bottom:8px}.skrow .b .l2{height:11px;width:60%}
+  .dash{width:min(1200px,100%);background:var(--surface);border-radius:20px;box-shadow:var(--sh3);overflow:hidden;display:flex}
+  .side{width:236px;background:#1A1C19;color:#cfd4cb;padding:16px 0;flex:0 0 auto;overflow-y:auto;max-height:802px}
+  .side .br{padding:0 20px 8px;font-weight:800;font-size:17px;color:#fff}
+  .side .cx{padding:0 20px 12px;font-size:11px;color:#8a8f86;border-bottom:1px solid #2c2f2b;margin-bottom:8px}
+  .side a{display:flex;gap:11px;align-items:center;padding:11px 20px;font-size:13.5px;cursor:pointer;color:#cfd4cb}
+  .side a.on{background:var(--primary);color:#fff;font-weight:700}.side a:hover:not(.on){background:#2c2f2b}
+  .side .gl{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:#6f746b;padding:12px 20px 4px}
+  .main{flex:1;min-width:0;display:flex;flex-direction:column;max-height:802px}
+  .tp{display:flex;align-items:center;gap:12px;padding:14px 24px;border-bottom:1px solid var(--ov)}.tp h2{margin:0;font-size:calc(19px*var(--fs))}.tp .gw{flex:1}
+  .av{width:36px;height:36px;border-radius:50%;background:var(--pc);color:var(--onpc);display:grid;place-items:center;font-weight:700}
+  .ct2{padding:20px 24px;overflow-y:auto}
+  .dk{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+  .dc{border-radius:var(--rl);padding:16px;color:#fff;cursor:pointer;transition:.15s}.dc:hover{transform:translateY(-2px)}.dc .n{font-size:calc(26px*var(--fs));font-weight:800}.dc .l{font-size:12.5px;opacity:.95}
+  .g{background:#2E7D32}.a{background:#F9A825;color:#3a2c00}.r{background:#C62828}.k{background:#37474F}.b{background:#1565C0}.p{background:#6A1B9A}.t{background:#00695C}
+  .g2{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}.g2.ev{grid-template-columns:1fr 1fr}
+  .pan{border:1px solid var(--ov);border-radius:var(--rl);padding:16px;background:var(--surface);margin-bottom:16px}.pan h3{margin:0 0 12px;font-size:15px;display:flex;align-items:center;gap:8px}.pan h3 .gw{flex:1}
+  table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--ov)}th{color:var(--onv);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px}
+  tr.clk{cursor:pointer}tr.clk:hover{background:var(--s2)}
+  .stt{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;display:inline-block}
+  .s-ok{background:#E8F5E9;color:#1B5E20}.s-w{background:#FFF8E1;color:#7A5800}.s-bd{background:#FFEBEE;color:#B71C1C}.s-i{background:#E3F2FD;color:#0D47A1}.s-p{background:#F3E5F5;color:#4A148C}.s-m{background:#ECEFF1;color:#37474F}
+  .mf{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .db{border:0;border-radius:999px;padding:7px 13px;font-weight:700;font-size:12.5px;cursor:pointer}.db.pri{background:var(--primary);color:#fff}.db.ok{background:#E8F5E9;color:#1B5E20}.db.no{background:#FFEBEE;color:#B71C1C}.db.ed{background:#E3F2FD;color:#0D47A1}.db.tr{background:#FFF3E0;color:#E65100}
+  .fg{display:grid;grid-template-columns:1fr 1fr;gap:12px}.fg .f label{font-size:12px;color:var(--onv);font-weight:600;display:block;margin-bottom:5px}.fg .f input,.fg .f select{width:100%;padding:10px;border:1.5px solid var(--ov);border-radius:var(--rs);font-family:inherit;font-size:13px}
+  .srch{display:flex;align-items:center;gap:8px;border:1.5px solid var(--ov);border-radius:999px;padding:9px 14px;margin-bottom:14px;background:var(--surface)}.srch input{border:0;outline:0;flex:1;font-size:14px;font-family:inherit;background:transparent}
+  @media(max-width:760px){.side{display:none}.dk{grid-template-columns:1fr 1fr}.g2,.g2.ev,.fg{grid-template-columns:1fr}}
+  .hide{display:none!important}.fade{animation:f .25s ease}@keyframes f{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:grid;place-items:center;z-index:200}.modal .bx{background:#fff;border-radius:16px;padding:22px;width:min(620px,92%);max-height:88vh;overflow-y:auto}
+  .toast{position:fixed;left:50%;bottom:34px;transform:translate(-50%,20px);background:#1A1C19;color:#fff;padding:14px 20px;border-radius:14px;font-size:14px;box-shadow:var(--sh3);z-index:300;opacity:0;transition:.3s;max-width:86%;text-align:center;line-height:1.5}.toast.show{opacity:1;transform:translate(-50%,0)}
+  .lang-card{border:2px solid var(--ov);border-radius:var(--rl);padding:18px;display:flex;align-items:center;gap:14px;cursor:pointer;margin:10px 0}
+  .lang-card.on{border-color:var(--primary);background:var(--pc)}
+  .slogan{font-size:12px;color:var(--onv);letter-spacing:.4px;margin-top:2px}
+  .mandal-grp{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--onv);font-weight:800;margin:16px 2px 6px;display:flex;align-items:center;gap:6px}
+  .mandal-grp .cnt{background:var(--s2);border-radius:999px;padding:1px 8px;font-weight:700}
+  .consent-box{display:flex;gap:10px;align-items:flex-start;background:var(--s1);border:1px solid var(--ov);border-radius:var(--rm);padding:12px;margin:12px 0;font-size:12.5px;line-height:1.5}
+  .consent-box input{margin-top:3px}
+  .matrix{width:100%;border-collapse:collapse;font-size:12px}.matrix th,.matrix td{border:1px solid var(--ov);padding:8px;text-align:center}
+  .rankdot{width:10px;height:10px;border-radius:50%;display:inline-block}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <b><span id="logoSpan">🌱</span> Krinexa Agri</b>
+  <div class="seg" id="appseg">
+    <button class="on" onclick="setApp('farmer',this)">👨‍🌾 Farmer</button>
+    <button onclick="setApp('field',this)">🧑‍💼 Field Staff</button>
+    <button onclick="setApp('agronomist',this)">🌾 Agronomist</button>
+    <button onclick="setApp('fpo',this)">🏢 FPO Portal</button>
+    <button onclick="setApp('admin',this)">🛠️ Admin</button>
+  </div>
+  <div class="tgl">
+    <button class="tbtn" id="netBtn" onclick="toggleNet()"><span class="onpill" id="netLbl">🟢 Online</span></button>
+    <button class="tbtn" id="lfBtn" onclick="toggleA('large','lfBtn')">A+</button>
+    <button class="tbtn" id="ctBtn" onclick="toggleA('contrast','ctBtn')">◐</button>
+  </div>
+</div>
+<div class="stage" id="stage"></div>
+<div id="modalRoot"></div><div id="toastRoot"></div>
+
+<script>
+/* ===== MOCK DATA ===== */
+const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a, pick=a=>a[rnd(0,a.length-1)];
+const teNames=['రాములు','లక్ష్మి','వెంకటేశ్','సీతమ్మ','రాజేష్','అనిత','సురేష్','దివ్య','కిరణ్','పద్మ','నారాయణ','గీత','రవి','సరిత','మోహన్','కవిత','శ్రీను','భారతి','ప్రసాద్','రమ'];
+const teSur=['రెడ్డి','నాయుడు','గౌడ్','రావు','శర్మ','యాదవ్','గారు'];
+const STATE_NAME='తెలంగాణ';
+const districts=['Medak','Siddipet','Sangareddy'];
+const MANDALS={'Medak':['Toopran','Chegunta','Ramayampet'],'Siddipet':['Dubbak','Cheriyal','Gajwel'],'Sangareddy':['Sadasivpet','Patancheru','Zaheerabad']};
+const VILLAGE_MAP={'Toopran':['Kondapur','Aloor'],'Chegunta':['Narsapur'],'Ramayampet':['Pati'],'Dubbak':['Dubbak'],'Cheriyal':['Cheriyal'],'Gajwel':['Siddipet'],'Sadasivpet':['Medak'],'Patancheru':['Jagdevpur'],'Zaheerabad':['Toopran']};
+const villages=['Kondapur','Aloor','Dubbak','Narsapur','Cheriyal','Pati','Siddipet','Medak','Toopran','Jagdevpur'];
+function mandalOf(v){for(const m in VILLAGE_MAP)if(VILLAGE_MAP[m].includes(v))return m;return 'Toopran';}
+function districtOfMandal(m){for(const d in MANDALS)if(MANDALS[d].includes(m))return d;return 'Medak';}
+const cropDefs=[['🌶️','మిర్చి'],['🌾','వరి'],['🌱','పత్తి'],['🥜','వేరుశెనగ'],['🌽','మొక్కజొన్న'],['🍅','టమాటో']];
+const CROPLIST=[['వరి','Paddy / Rice','🌾'],['మిర్చి','Chilli','🌶️'],['పత్తి','Cotton','🌱'],['వేరుశెనగ','Groundnut','🥜'],['మొక్కజొన్న','Maize','🌽'],['టమాటో','Tomato','🍅'],['చెరకు','Sugarcane','🎋'],['పసుపు','Turmeric','🟡'],['కంది','Red Gram','🫘'],['జొన్న','Sorghum','🌿']];
+const ADVCATS_TE=[['పురుగు సమస్య','Pest Issue'],['వ్యాధి సమస్య','Disease Issue'],['పోషకాహార సమస్య','Nutrition Issue'],['నీటిపారుదల','Irrigation Issue'],['ఉత్పత్తి మార్గదర్శనం','Product Guidance'],['ఇతరం','Other']];
+const cats=['Pesticide','Fertilizer','Seed','Tool','Bio-input'], brands=['AgriPro','GreenGrow','FarmCare','KisanX','BioNature'], mfrs=['Krinexa Agro Ltd','Bharat Inputs','Deccan AgriCorp'];
+const PROBLEMS=['Pest','Disease','Nutrient','Weed','Growth','Flowering'];
+const fpoNames=['శ్రీ అన్నదాత FPC','రైతు మిత్ర FPO','హరిత FPC','కిసాన్ సేవా FPO','గ్రామీణ FPC','అన్నపూర్ణ FPO','సహకార FPC','ప్రగతి FPO','విజయ FPC','నవోదయ FPO'];
+const prodEmoji=['🛢️','🧪','🌶️','🪣','🌿','💊','🧴','🌾'];
+const prodEN={'వేప నూనె':'Neem Oil','జీవామృతం':'Jeevamrutham','మిర్చి విత్తనాలు':'Chilli Seeds','యూరియా':'Urea','బోరాన్':'Boron','పంచగవ్య':'Panchagavya','కాపర్':'Copper Oxychloride','సల్ఫర్':'Sulphur'};
+const FPOS=fpoNames.map((n,i)=>({id:'FPO-'+(i+1),name:n,dist:pick(districts),farmers:rnd(60,260),active:rnd(40,200),mgr:pick(teNames)+' '+pick(teSur),mob:'98765 '+rnd(10000,99999),email:'mgr'+i+'@krinexa.app',desig:i%2?'FPO Manager':'FPC Manager'}));
+const FARMERS=Array.from({length:500},(_,i)=>({id:'KRX-F-'+String(i+1).padStart(6,'0'),name:pick(teNames)+' '+pick(teSur),village:pick(villages),dist:pick(districts),crop:pick(cropDefs),fpo:i%5===0?'Individual':pick(FPOS).name,orders:rnd(0,8),adv:rnd(0,6),acres:[0.5,1.25,2.75,1,3,10][rnd(0,5)],approved:Math.random()>0.1,email:i%3?'':'farmer'+i+'@mail.com'}));
+const EMP=Array.from({length:20},(_,i)=>({id:'EMP-'+(i+21),name:pick(teNames)+' '+pick(teSur),role:pick(['Field Officer','Agronomist','Inventory Manager','Delivery Coordinator','FPO Manager']),dept:pick(['Operations','Advisory','Supply','Logistics']),locs:[{dist:pick(districts),mandal:pick(Object.keys(MANDALS[districts[0]])),village:pick(villages),pin:'50'+rnd(1000,9999)}],fpo:i%3?pick(FPOS).name:'—',status:Math.random()>0.15?'Active':'Disabled'}));
+EMP.forEach(e=>{const d=pick(districts),m=pick(MANDALS[d]);e.locs=[{dist:d,mandal:m,village:pick(VILLAGE_MAP[m]||villages),pin:'50'+rnd(1000,9999)}];if(Math.random()>0.5){const d2=pick(districts),m2=pick(MANDALS[d2]);e.locs.push({dist:d2,mandal:m2,village:pick(VILLAGE_MAP[m2]||villages),pin:'50'+rnd(1000,9999)});}});
+const PRODUCTS=Array.from({length:200},(_,i)=>{const c=pick(cats),pr=rnd(80,1200),mrp=pr+rnd(10,60),nm=pick(['వేప నూనె','జీవామృతం','మిర్చి విత్తనాలు','యూరియా','బోరాన్','పంచగవ్య','కాపర్','సల్ఫర్']);return{id:'P-'+(i+1),code:'KRX-'+String(i+1).padStart(4,'0'),name:nm,nameEn:prodEN[nm]||nm,e:pick(prodEmoji),cat:c,brand:pick(brands),mfr:pick(mfrs),mrp:mrp,price:pr,discount:Math.round((1-pr/mrp)*100),gst:5,stk:rnd(0,400),lowAlert:20,warehouse:pick(['Medak WH-1','Siddipet WH-2']),crop:pick(cropDefs)[1],packSize:pick(['250ml','500ml','1L','1kg','5kg']),unit:pick(['ml','L','kg']),dose:rnd(2,8)+'ml / లీటరు',doseAcre:rnd(200,600)+'ml/ఎకరం',method:'ఆకులపై సమానంగా పిచికారీ',frequency:'ప్రతి 10 రోజులకు ఒకసారి',safety:'మాస్క్, చేతి తొడుగులు',wait:rnd(0,7)+' రోజులు',eta:pick(['1-2 రోజులు','2-4 రోజులు','3-5 రోజులు']),benefits:'పంట ఆరోగ్యాన్ని మెరుగుపరుస్తుంది, దిగుబడి పెంచుతుంది',problem:pick(PROBLEMS),rating:(3.8+Math.random()*1.2).toFixed(1),reviews:rnd(8,240),featured:Math.random()>0.7,bestSeller:Math.random()>0.8,photo:null};});
+const ORDERS=Array.from({length:500},(_,i)=>({id:'#A-'+(2000+i),farmer:pick(FARMERS).name,village:pick(villages),items:rnd(1,4)+' వస్తువులు',amt:'₹'+rnd(120,4800),status:pick(['Booked','Confirmed','Dispatched','Delivered','Delivered','Delivered']),ftype:Math.random()>0.2?'FPO':'Individual',product:pick(PRODUCTS).name,payStatus:pick(['Paid','Paid','Paid','COD Pending'])}));
+const ADV=Array.from({length:200},(_,i)=>({id:'#AD-'+(2300+i),farmer:pick(FARMERS).name,crop:pick(cropDefs)[1],status:pick(['Open','Open','Assigned','Closed','Closed']),sla:rnd(1,23)+' గం',plotArea:(Math.random()*3+0.25).toFixed(2)+' ఎకరాలు',remarks:''}));
+const PROC=Array.from({length:100},(_,i)=>({id:'#PR-'+(1000+i),fpo:pick(FPOS).name,prod:pick(['Neem Oil ×500','Bio-fert ×200','Seeds ×120','Mixed ×80']),val:'₹'+rnd(20,90)+',000',status:pick(['Submitted','Under Review','Approved','Partially Approved','Dispatched','Delivered'])}));
+const statCls={Open:'s-w',Assigned:'s-i',Closed:'s-ok',Booked:'s-i',Confirmed:'s-i',Dispatched:'s-w',Delivered:'s-ok',Submitted:'s-i','Under Review':'s-w',Approved:'s-ok','Partially Approved':'s-p'};
+let APP_LOGO='🌱';
+let DELIVERY_TIERS=[{min:0,max:499,charge:40},{min:500,max:999,charge:20},{min:1000,max:999999,charge:0}];
+function getDeliveryCharge(subtotal){const t=DELIVERY_TIERS.find(t=>subtotal>=t.min&&subtotal<=t.max);return t?t.charge:40;}
+let consentGiven=false;
+let CONSENTS=[];
+function logConsent(name){CONSENTS.push({farmer:name||(farmerProfile?farmerProfile.name:'రాములు రెడ్డి'),date:new Date().toLocaleString(),procurement:true,photo:true});}
+function computeRank(catW,priW,statusW){return catW*priW*statusW;}
+let farmerProfile=null;
+let myOrders=[{id:'#A-2381',product:'వేప నూనె',productEn:'Neem Oil',items:'వేప నూనె × 2',amt:252,status:'Dispatched',eta:'రేపు',payStatus:'Paid'}];
+const FARMER_NOTIFS=[
+ {ic:'✅',bg:'#2E7D32',fg:'#fff',t:'సమాధానం వచ్చింది',d:'నిపుణుడు జవాబు ఇచ్చారు',tm:'ఇప్పుడే',go:'advdetail'},
+ {ic:'🚚',bg:'#FFF3CD',fg:'#664d03',t:'రవాణా అయింది',d:'రేపు డెలివరీ',tm:'2గం',go:'tracking'},
+ {ic:'🌦️',bg:'#E3F2FD',fg:'#0D47A1',t:'వాతావరణ హెచ్చరిక',d:'రేపు వర్షం',tm:'5గం',go:'home'}
+];
+let BROADCASTS=[{id:'BC-1',area:'Medak, Siddipet జిల్లాలు',crop:'మిర్చి, వరి',msg:'రాబోయే 48 గంటల్లో భారీ వర్షాలు – పంటను రక్షించే చర్యలు తీసుకోండి',sev:'High',date:'ఈరోజు',img:'🌧️'}];
+let FOLLOWUPS=[];
+let addresses=[{id:1,label:'ఇల్లు (Home)',line:'Kondapur, Toopran Mandal, Medak',pin:'502285',def:true}];
+
+/* ===== STATE ===== */
+let S={app:'farmer',screen:'lang',params:null,online:true,large:false,contrast:false,loading:false};
+let cart=[], su={}, selCrop='మిర్చి';
+const $=id=>document.getElementById(id), stage=()=>$('stage');
+function toast(m){const r=$('toastRoot'),e=document.createElement('div');e.className='toast te';e.innerHTML=String(m).replace(/\n/g,'<br>');r.appendChild(e);requestAnimationFrame(()=>e.classList.add('show'));setTimeout(()=>{e.classList.remove('show');setTimeout(()=>e.remove(),320)},2600);}
+window.alert=toast;
+function closeModal(){$('modalRoot').innerHTML='';}
+function notify(m){toast('✅ '+m);}
+function setApp(app,btn){if(btn){document.querySelectorAll('#appseg button').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}S.app=app;S.screen=app==='farmer'?(S.langPicked?'welcome':'lang'):'login';S.params=null;render();}
+function toggleNet(){S.online=!S.online;$('netLbl').className='onpill'+(S.online?'':' off');$('netLbl').textContent=S.online?'🟢 Online':'🔴 Offline';render();}
+function toggleA(k,id){S[k]=!S[k];$(id).classList.toggle('act',S[k]);document.body.classList.toggle(k==='large'?'large-font':'contrast',S[k]);}
+function setLogo(v){APP_LOGO=v||'🌱';const ls=$('logoSpan');if(ls)ls.textContent=APP_LOGO;render();}
+function render(){if(S.app==='farmer')return renderFarmer();if(S.app==='field')return renderField();if(S.app==='agronomist')return renderAgronomist();if(S.app==='fpo')return renderFPO();if(S.app==='admin')return renderAdmin();}
+function go(screen,params,isData){S.screen=screen;S.params=params||null;if(isData){S.loading=true;render();setTimeout(()=>{S.loading=false;render();},600);}else render();}
+
+/* shared helpers */
+function phone(inner,nav,fn,navItems){
+  const net=S.online?`<span class="net">🟢 <span style="color:#1B5E20">Online</span></span>`:`<span class="net">🔴 <span style="color:#B71C1C">Offline</span></span>`;
+  const navHtml=nav?`<div class="bn">${navItems.map(n=>`<button class="ni ${S.screen===n[0]||n[2]?.includes(S.screen)?'on':''}" onclick="${fn}('${n[0]}')"><span class="pl">${n[1]}</span><span class="te">${n[3]}</span></button>`).join('')}</div>`:'';
+  return `<div class="phone fade"><div class="sb"><span>9:41</span>${net}</div><div class="ofbar ${S.online?'on':'off'}">${S.online?'🟢':'🔴'}<span class="te">${S.online?'ఆన్‌లైన్':'ఆఫ్‌లైన్ — కనెక్షన్ తనిఖీ చేయండి'}</span></div>${inner}${navHtml}</div>`;
+}
+const skelList=n=>Array.from({length:n}).map(()=>`<div class="skrow"><div class="sk a"></div><div class="b"><div class="sk l1"></div><div class="sk l2"></div></div></div>`).join('');
+const skelKpi=()=>`<div class="kpis">${Array.from({length:4}).map(()=>`<div class="kpi"><div class="sk" style="height:24px;width:50%;margin-bottom:8px"></div><div class="sk" style="height:12px;width:70%"></div></div>`).join('')}</div>`;
+function empty(ic,title,cta,onclick){return `<div class="es"><div class="ic">${ic}</div><h4 class="te">${title}</h4>${cta?`<button class="btn tonal te" style="max-width:240px;margin:16px auto 0" onclick="${onclick}">${cta}</button>`:''}</div>`;}
+function voiceBar(label){return `<div class="vbar"><button onclick="playVoice(this)" class="te">🔊 ${label}</button><div class="prog"><i></i></div><button class="vb2" onclick="toast('⏸ పాజ్')">⏸</button><button class="vb2" onclick="playVoice(this.parentNode.querySelector('button'))">↻</button></div>`;}
+function playVoice(btn){const bar=btn.closest('.vbar'),i=bar.querySelector('.prog i');i.style.width='0';toast('🔊 వినిపిస్తోంది...');let p=0;const t=setInterval(()=>{p+=8;i.style.width=p+'%';if(p>=100)clearInterval(t);},150);}
+function dataTable(head,rows){return `<table><thead><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table>`;}
+function tl(c,n,t,tm,last){return `<div class="tl ${c}"><div class="col"><div class="nd">${n}</div>${last?'':'<div class="ln"></div>'}</div><div class="inf"><b class="te">${t}</b><span class="te">${tm}</span></div></div>`;}
+function selC(el){el.parentNode.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');}
+function requireConsent(cb){if(consentGiven){cb();return;}$('modalRoot').innerHTML=`<div class="modal"><div class="bx" style="max-width:420px"><h3 class="te" style="margin:0 0 10px">గోప్యతా విధానం & సమ్మతి</h3><p class="te" style="font-size:13px;color:var(--onv);line-height:1.6">కొనుగోలు (procurement) మరియు ఫోటో అప్‌లోడ్ ఫీచర్లను ఉపయోగించే ముందు, మీ డేటాను Krinexa Agri ఎలా వాడుతుందో సమ్మతించండి.</p><div class="consent-box te"><input type="checkbox" id="consentChk"><label for="consentChk">నేను గోప్యతా విధానాన్ని చదివి, నా డేటా వినియోగానికి సమ్మతిస్తున్నాను.</label></div><button class="btn te" onclick="const c=$('consentChk');if(!c.checked){toast('దయచేసి సమ్మతించండి');return;}consentGiven=true;logConsent();closeModal();(${cb.toString()})();">కొనసాగించండి</button><button class="btn gh te" onclick="closeModal()">రద్దు చేయండి</button></div></div>`;}
+
+/* ===== LANGUAGE SELECT ===== */
+function renderLang(){
+  stage().innerHTML=`<div class="phone fade"><div class="sb"><span>9:41</span><span class="net">🟢 Online</span></div><div class="body nn" style="display:flex;flex-direction:column;justify-content:center;height:100%;padding:0 26px;text-align:center">
+    <div style="font-size:60px">${APP_LOGO}</div>
+    <h1 class="te" style="margin:10px 0 0;color:var(--primary);font-size:calc(25px*var(--fs))">కృనెక్సా అగ్రి</h1>
+    <div class="slogan te">ప్రతి రైతుకు నమ్మకమైన తోడు — Trusted Partner for Every Farmer</div>
+    <p class="te" style="color:var(--onv);margin:22px 0 6px;font-weight:600">భాష ఎంచుకోండి / Select Language</p>
+    <div class="lang-card ${S.langSel==='te'||!S.langSel?'on':''} te" onclick="S.langSel='te';renderLang()"><span style="font-size:28px">తె</span><div style="text-align:left"><b>తెలుగు</b><div style="font-size:11px;color:var(--onv)">Telugu</div></div></div>
+    <div class="lang-card ${S.langSel==='en'?'on':''}" onclick="S.langSel='en';renderLang()"><span style="font-size:28px">EN</span><div style="text-align:left"><b>English</b><div style="font-size:11px;color:var(--onv)">ఇంగ్లీష్</div></div></div>
+    <button class="btn te" onclick="S.langPicked=true;go('welcome')">కొనసాగించండి / Continue ➤</button>
+  </div></div>`;
+}
+
+/* ===== FARMER ===== */
+const fNav=[['home','🏠',['home'],'హోమ్'],['crops','🌱',['crops','addcrop'],'పంటలు'],['shop','🛒',['shop'],'కొనుగోలు'],['profile','👤',['profile'],'ప్రొఫైల్']];
+function renderFarmer(){
+  const s=S.screen;let inner='';
+  if(s==='lang'){renderLang();return;}
+  if(s==='welcome'){stage().innerHTML=`<div class="phone fade"><div class="sb"><span>9:41</span><span class="net">🟢 Online</span></div><div class="body nn" style="display:flex;flex-direction:column;justify-content:center;height:100%;text-align:center;padding:0 24px"><div style="font-size:66px">${APP_LOGO}</div><h1 class="te" style="margin:8px 0 2px;color:var(--primary);font-size:calc(26px*var(--fs))">కృనెక్సా అగ్రి</h1><div class="slogan te">ప్రతి రైతుకు నమ్మకమైన తోడు</div><p class="te" style="color:var(--onv);margin:10px 0 28px">రైతుల కోసం సలహా & ఇన్‌పుట్ యాప్</p><button class="btn te" onclick="go('login')">లాగిన్ చేయండి</button><button class="btn out te" onclick="startSignup()">🆕 కొత్త రైతు? నమోదు చేసుకోండి</button><button class="btn gh te" style="font-size:12px" onclick="go('lang')">🌐 భాష మార్చండి</button></div></div>`;return;}
+  if(s==='login'){stage().innerHTML=`<div class="phone fade"><div class="sb"><span>9:41</span><span class="net">🟢 Online</span></div><div class="ab"><button class="ib" onclick="go('welcome')">←</button><div class="ti te" style="font-size:18px">లాగిన్</div></div><div class="body nn">
+      <div class="fld"><label class="te">మొబైల్ నంబర్</label><div class="inp"><span>📱</span><input placeholder="98765 43210"></div></div>
+      <div class="fld"><label class="te">OTP ఎలా పొందాలి? (Receive OTP via)</label><div class="chiprow"><div class="chip on te" onclick="selC(this)">📱 మొబైల్</div><div class="chip te" onclick="selC(this)">📧 ఇమెయిల్ (నమోదైతే)</div></div></div>
+      <div class="fld"><label class="te">OTP</label><div class="inp"><span>🔢</span><input placeholder="● ● ● ●"></div></div>
+      <button class="btn out te" style="margin-top:0" onclick="toast('🔊 OTP వినిపిస్తోంది')">🔊 OTP వినండి (Voice OTP)</button>
+      <button class="btn gh te" onclick="toast('📧 OTP ఇమెయిల్‌కు మళ్లీ పంపబడింది')">📧 ఇమెయిల్ ద్వారా OTP మళ్లీ పంపండి (Resend via Email)</button>
+      <button class="btn te" onclick="go('home')">లాగిన్ ➤</button>
+      <button class="btn gh te" onclick="startSignup()">కొత్త రైతు? ఇక్కడ నమోదు</button></div></div>`;return;}
+  if(s==='signup'){return renderSignup();}
+  if(s==='home'){
+    const active=myOrders.find(o=>o.status!=='Delivered');
+    inner=`<div class="ab"><div style="flex:1"><div class="grt te">నమస్కారం, ${farmerProfile?farmerProfile.name:'రాములు'} గారు 👋</div><div class="su te">${farmerProfile?farmerProfile.cropIcon+' '+farmerProfile.crop:'🌶️ మిర్చి'} · 🏢 ${farmerProfile?farmerProfile.fpo:'శ్రీ అన్నదాత FPC'}</div></div><button class="ib" onclick="go('notif')">🔔<span class="badge">3</span></button></div>
+      <div class="body"><div class="st te">నా పంటలు</div>
+        <div class="crops"><div class="cc" onclick="go('advdetail')"><div class="e">🌶️</div><div class="n te">మిర్చి</div><div class="sg te">పూత దశ</div></div><div class="cc"><div class="e">🌾</div><div class="n te">వరి</div><div class="sg te">నాట్లు</div></div><div class="addc te" onclick="go('crops',null,true)">＋<br>జోడించు</div></div>
+        ${active?`<div class="ostrip" onclick="go('tracking')"><span style="font-size:24px">🚚</span><div style="flex:1"><b class="te">మీ ఆర్డర్ దారిలో ఉంది</b><div class="te" style="font-size:12px;color:var(--onv)">${active.items} · ${active.eta}</div></div><span>›</span></div>`:`<div class="ostrip" onclick="go('orderhist')"><span style="font-size:24px">📦</span><div style="flex:1"><b class="te">గత ఆర్డర్లు చూడండి</b><div class="te" style="font-size:12px;color:var(--onv)">ప్రస్తుతం దారిలో ఆర్డర్ లేదు</div></div><span>›</span></div>`}
+        <div class="st te">సలహాలు</div>
+        <div class="adv" onclick="go('advdetail')"><div class="img">🐛</div><div class="ct"><span class="tag te">⚠️ పురుగు హెచ్చరిక</span><h4 class="te">మిర్చిలో తామర పురుగు</h4><p class="te">పూత దశలో తామర పురుగు...</p></div></div>
+        ${BROADCASTS.map(b=>`<div class="adv" onclick="go('broadcastdetail',{id:'${b.id}'})" style="border-color:#F9A825"><div class="img" style="background:linear-gradient(135deg,#FFD54F,#F9A825)">${b.img}</div><div class="ct"><span class="tag te" style="background:#FFF3CD;color:#664d03">📢 హెచ్చరిక ప్రసారం</span><h4 class="te">${b.area}</h4><p class="te">${b.msg}</p></div></div>`).join('')}
+      </div><button class="fab te" onclick="go('ask')">🎙️ నిపుణుడిని అడగండి</button>`;
+    stage().innerHTML=phone(inner,true,'farmerNav',fNav);return;
+  }
+  if(s==='broadcastdetail'){const b=BROADCASTS[0];inner=`<div class="ab"><button class="ib" onclick="go('home')">←</button><div class="ti te" style="font-size:17px">వాతావరణ హెచ్చరిక</div></div><div class="body"><div class="adv"><div class="img" style="height:150px;background:linear-gradient(135deg,#FFD54F,#F9A825)">${b.img}</div><div class="ct"><span class="tag te" style="background:#FFF3CD;color:#664d03">📢 ${b.sev} Priority</span><h4 class="te">${b.area}</h4><p class="te" style="font-size:15px;line-height:1.7">${b.msg}</p></div></div><div class="alert al-i"><span>🌾</span><span class="te">సంబంధిత పంటలు: ${b.crop}</span></div></div>`;stage().innerHTML=phone(inner,true,'farmerNav',fNav);return;}
+  if(s==='notif'){inner=`<div class="ab"><button class="ib" onclick="go('home')">←</button><div class="ti te">నోటిఫికేషన్లు</div></div><div class="body">${FARMER_NOTIFS.map(i=>`<div class="nt" onclick="go('${i.go}',null,${i.go!=='home'})"><div class="ni2" style="background:${i.bg};color:${i.fg}">${i.ic}</div><div class="nb"><b class="te">${i.t}</b><p class="te">${i.d}</p></div><span class="tm te">${i.tm}</span></div>`).join('')}</div>`;stage().innerHTML=phone(inner,true,'farmerNav',fNav);return;}
+  if(s==='advdetail'){const a=ADV[0];inner=`<div class="ab"><button class="ib" onclick="go('home')">←</button><div class="ti te" style="font-size:18px">సలహా వివరాలు</div></div><div class="body"><div class="adv"><div class="img" style="height:150px">🐛</div><div class="ct"><span class="tag te">⚠️ పురుగు హెచ్చరిక</span><h4 class="te" style="font-size:19px">మిర్చిలో తామర పురుగు</h4>${voiceBar('సలహా వినండి')}<p class="te" style="font-size:15px;line-height:1.7">పూత దశలో తామర పురుగు ఆశించే అవకాశం ఉంది. వేప నూనె 5ml ఒక లీటరు నీటికి కలిపి పిచికారీ చేయండి.</p>${S.lastRemarks?`<div class="pd te"><b>📝 అదనపు వ్యాఖ్యలు (Agronomist)</b><p>${S.lastRemarks}</p></div>`:''}</div></div>${S.lastPlotArea?`<div class="alert al-i te" style="margin-top:8px"><span>📐</span><span><b>ప్లాట్ విస్తీర్ణం:</b> ${S.lastPlotArea}</span></div>`:''}<div class="alert al-w"><span>⚠️</span><span class="te"><b>భద్రత:</b> మాస్క్ ధరించండి.</span></div><button class="btn te" onclick="go('product',PRODUCTS[0])">🛒 సిఫార్సు మందు చూడండి</button></div>`;stage().innerHTML=phone(inner,true,'farmerNav',fNav);return;}
+  if(s==='ask'){
+    inner=`<div class="ab"><button class="ib" onclick="go('home')">←</button><div class="ti te" style="font-size:18px">నిపుణుడిని అడగండి</div></div>
+      <div class="body">
+        <div class="alert al-i" style="margin-top:2px"><span>📐</span><span class="te"><b>ప్లాట్ విస్తీర్ణం తప్పనిసరి</b> — ఫోటో/సమస్య టైప్ చేయడానికి ముందు దీన్ని పూరించండి.</span></div>
+        <div class="fld"><label class="te">ప్లాట్ విస్తీర్ణం (ఎకరాలు/సెంట్లు) *</label><div class="inp"><span>📐</span><input id="plotArea" oninput="checkPlotGate()" placeholder="ఉదా: 1.25 ఎకరాలు లేదా 50 సెంట్లు"></div></div>
+        <label class="te" style="font-size:13px;color:var(--onv);font-weight:600">టికెట్ వర్గం (Category) *</label>
+        <div class="chiprow">${ADVCATS_TE.map((c,i)=>`<div class="chip ${i==0?'on':''} te" onclick="selC(this)">${c[0]}</div>`).join('')}</div>
+        <p class="te" style="font-size:16px;font-weight:600;margin:16px 0 0;text-align:center">మీ సమస్యను చెప్పండి</p>
+        <div style="text-align:center"><button id="mic" class="mic" onclick="micTgl()">🎙️</button><p id="micS" class="te" style="color:var(--onv)">నొక్కి మాట్లాడండి</p><div id="wv" class="wave hide">${'<span></span>'.repeat(7)}</div></div>
+        <div class="fld"><label class="te">లేదా టైప్ చేయండి (Type your issue)</label><div class="inp" style="align-items:flex-start"><textarea id="askText" disabled class="te" rows="3" style="border:0;outline:0;width:100%;font-family:inherit;font-size:15px;resize:none;opacity:.5" placeholder="ముందుగా ప్లాట్ విస్తీర్ణం నమోదు చేయండి..."></textarea></div></div>
+        <div class="card fl" id="photoCard" style="opacity:.5"><div class="te" style="font-weight:600;margin-bottom:10px">📷 ఫోటోలు జోడించండి (బహుళం)</div><div id="photoRow" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><div class="pt" id="photoAddBtn" onclick="if(this.dataset.locked==='1'){toast('⚠️ ముందుగా ప్లాట్ విస్తీర్ణం నమోదు చేయండి');return;}addAskPhoto(this)" data-locked="1">📷</div></div></div>
+        <button class="btn te" onclick="submitAsk()">పంపండి ➤</button></div>`;
+    stage().innerHTML=phone(inner,true,'farmerNav',fNav);return;
+  }
+  if(s==='ticket'){inner=`<div class="ab"><button class="ib" onclick="go('home')">←</button><div class="ti te" style="font-size:18px">ప్రశ్న స్థితి</div></div><div class="body"><div class="card"><span class="stt s-w te">⏳ పంపబడింది · SLA 24గం</span></div>${S.lastPlotArea?`<div class="alert al-i te" style="margin-top:8px"><span>📐</span><span><b>ప్లాట్ విస్తీర్ణం:</b> ${S.lastPlotArea}</span></div>`:''}<div style="margin:16px 4px">${tl('dn','✓','సృష్టించబడింది','ఇప్పుడే')}${tl('cu','⏳','కేటాయింపు వేచి','—')}${tl('','3','నిపుణుడి సమాధానం','24గం',1)}</div><div class="alert al-ok"><span>✅</span><span class="te">మీ సమాచారం సురక్షితం.</span></div><button class="btn out te" onclick="go('home')">హోమ్</button></div>`;stage().innerHTML=phone(inner,true,'farmerNav',fNav);return;}
+  if(s==='crops'){
+    let body;
+    if(S.loading)body=`<div class="srch sk" style="height:38px"></div>${skelList(4)}`;
+    else if(S.params==='empty')body=empty('🌱','ఇంకా పంటలు జోడించలేదు','＋ మీ మొదటి పంటను జోడించండి',"go('addcrop')");
+    else body=`<div class="srch"><span>🔍</span><input class="te" placeholder="పంట వెతకండి (Telugu/English)..." oninput="cropsScreenSearch(this.value)"></div>
+      <div id="myCrops">${[['🌶️','మిర్చి','పూత దశ · 1 ఎకరం'],['🌾','వరి','నాట్లు · 2 ఎకరాలు']].map(c=>`<div class="card fl" style="display:flex;gap:14px;align-items:center"><div style="font-size:32px">${c[0]}</div><div style="flex:1"><b class="te" style="font-size:16px">${c[1]}</b><div class="te" style="font-size:12px;color:var(--onv)">${c[2]}</div></div><button class="ib">✏️</button></div>`).join('')}</div>
+      <div class="st te">పంట చరిత్ర (Crop History)</div>
+      ${[['🌶️','మిర్చి','ఖరీఫ్ 2025','దిగుబడి పూర్తి'],['🌾','వరి','రబీ 2024','దిగుబడి పూర్తి']].map(h=>`<div class="card fl" style="display:flex;gap:12px;align-items:center"><div style="font-size:28px">${h[0]}</div><div style="flex:1"><b class="te" style="font-size:14px">${h[1]}</b><div class="te" style="font-size:12px;color:var(--onv)">${h[2]} · ${h[3]}</div></div><span class="sbad sb-ok te">పూర్తి</span></div>`).join('')}
+      <button class="btn tonal te" onclick="go('addcrop')">＋ కొత్త పంట జోడించండి</button>`;
+    inner=`<div class="ab"><div class="ti te">నా పంటలు</div></div><div class="body">${body}</div>`;
+    stage().innerHTML=phone(inner,true,'farmerNav',fNav);return;
+  }
+  if(s==='addcrop'){
+    inner=`<div class="ab"><button class="ib" onclick="go('crops',null,true)">←</button><div class="ti te" style="font-size:18px">పంట జోడించండి</div></div>
+      <div class="body">
+        <div class="srch"><span>🔍</span><input class="te" id="cropSearch" placeholder="పంట వెతకండి · Paddy / వరి / Rice..." oninput="cropSearch(this.value)" autofocus></div>
+        <label class="te" style="font-size:13px;color:var(--onv);font-weight:600">పంట ఎంచుకోండి (తెలుగు / English)</label>
+        <div class="crops" id="cropGrid" style="margin-top:8px">${CROPLIST.map(c=>`<div class="cc ${c[0]===selCrop?'sel':''}" onclick="pickCrop(this,'${c[0]}')"><div class="e">${c[2]}</div><div class="n te">${c[0]}</div><div style="font-size:10px;color:var(--onpc);opacity:.75">${c[1]}</div></div>`).join('')}</div>
+        <div class="fld"><label class="te">విస్తీర్ణం (ఎకరాలు) — ప్రీసెట్</label><div class="chiprow">${['¼','½','1','2','3'].map((a,i)=>`<div class="chip te" onclick="setAcre(this,'${a}')">${a}</div>`).join('')}</div></div>
+        <div class="fld"><label class="te">లేదా మాన్యువల్‌గా నమోదు చేయండి (Manual · decimal)</label><div class="inp"><span>📐</span><input id="acreInp" inputmode="decimal" placeholder="ఉదా: 0.5, 1.25, 2.75, 10"></div></div>
+        <div class="fld"><label class="te">సీజన్</label><div class="chiprow">${['ఖరీఫ్','రబీ','జాయిద్'].map((s2,i)=>`<div class="chip ${i==0?'on':''} te" onclick="selC(this)">${s2}</div>`).join('')}</div></div>
+        <button class="btn te" onclick="notify('పంట జోడించబడింది: '+selCrop);go('crops',null,true)">పంట సేవ్ చేయండి</button></div>`;
+    stage().innerHTML=phone(inner,true,'farmerNav',fNav);return;
+  }
+  if(s==='shop'){let body;if(S.loading)body=`<div class="srch sk" style="height:38px"></div>${skelList(5)}`;else body=`<div class="srch"><span>🔍</span><input class="te" placeholder="ఉత్పత్తి వెతకండి..." oninput="shopSearch(this.value)"></div><p class="te" style="font-size:12px;color:var(--onv);margin:0 2px 6px">ఉత్పత్తిపై నొక్కి పూర్తి వివరాలు చూడండి 👇</p><div id="prodList">${PRODUCTS.slice(0,8).map(p=>prodRow(p)).join('')}</div>`;inner=`<div class="ab"><div class="ti te">కొనుగోలు</div><button class="ib" onclick="go('cart')">🛒${cart.length?`<span class="badge">${cart.length}</span>`:''}</button></div><div class="body">${body}</div>`;stage().innerHTML=phone(inner,true,'farmerNav',fNav);return;}
+  if(s==='product'){const p=S.params||PRODUCTS[0],oos=p.stk===0;inner=`<div class="ab"><button class="ib" onclick="go('shop')">←</button><div class="ti te" style="font-size:17px">ఉత్పత్తి వివరాలు</div><button class="ib" onclick="toast('🔗 షేర్ చేయబడింది')">⤴</button></div><div class="body">
+    <div style="height:148px;background:#E8F5E9;border-radius:var(--rl);display:grid;place-items:center;font-size:62px">${p.e}</div>
+    <h3 class="te" style="margin:14px 0 0">${p.name} <span style="font-size:13px;color:var(--onv);font-weight:500">(${p.nameEn||''})</span></h3>
+    <div class="te" style="font-size:12px;color:var(--onv)">${p.brand} · ${p.packSize}</div>
+    <div style="display:flex;gap:10px;align-items:center;margin:8px 0"><span class="pr te" style="color:var(--primary);font-weight:800;font-size:20px">₹${p.price}</span><span style="text-decoration:line-through;color:var(--outline);font-size:13px">₹${p.mrp}</span><span class="stt s-ok">${p.discount}% OFF</span><span class="sbad ${oos?'sb-no':'sb-ok'} te">${oos?'నిల్వ లేదు':'నిల్వలో ('+p.stk+')'}</span></div>
+    <div style="display:flex;gap:6px;align-items:center;margin:0 0 10px"><span class="te" style="color:#F9A825;font-weight:700">★ ${p.rating}</span><span class="te" style="font-size:12px;color:var(--onv)">(${p.reviews} రివ్యూలు)</span></div>
+    ${voiceBar('ఉత్పత్తి సమాచారం')}
+    <div class="pd"><b class="te">✨ ప్రధాన ప్రయోజనాలు (Key Benefits)</b><p class="te">${p.benefits}</p></div>
+    <div class="pd"><b class="te">🌱 సూచించిన పంటలు (Suitable Crops)</b><p class="te">${p.crop}</p></div>
+    <div class="pd"><b class="te">🐛 పరిష్కరించే సమస్య (Problem It Solves)</b><p class="te">${p.problem}</p></div>
+    <div class="pd"><b class="te">💊 మోతాదు (Dosage)</b><p class="te">${p.dose} · ${p.doseAcre}</p></div>
+    <div class="pd"><b class="te">🪣 వాడే విధానం (How to Use)</b><p class="te">${p.method}</p></div>
+    <div class="pd"><b class="te">⚠️ భద్రతా జాగ్రత్తలు (Safety Precautions)</b><p class="te">${p.safety}</p></div>
+    <div class="pd"><b class="te">🚚 అంచనా డెలివరీ సమయం (Estimated Delivery Time)</b><p class="te">${p.eta}</p></div>
+    <div class="st te">సంబంధిత ఉత్పత్తులు</div><div class="crops">${PRODUCTS.slice(10,14).map(r=>`<div class="cc" style="background:#E8F5E9" onclick="go('product',PRODUCTS[${PRODUCTS.indexOf(r)}])"><div class="e">${r.e}</div><div class="n te" style="font-size:12px">₹${r.price}</div></div>`).join('')}</div>
+    ${oos?`<div class="alert al-w"><span>📦</span><span class="te">ఈ ఉత్పత్తి అందుబాటులో లేదు</span></div><button class="btn out te" onclick="go('shop')">ప్రత్యామ్నాయాలు</button>`:`<div style="display:flex;gap:10px"><button class="btn tonal te" style="margin-top:14px" onclick="requireConsent(()=>{cart.push(0);notify('కార్ట్‌లో జోడించబడింది');})">🛒 కార్ట్‌కు జోడించండి</button><button class="btn te" style="margin-top:14px" onclick="requireConsent(()=>{cart=[0];go('cart')})">⚡ ఇప్పుడే కొనండి</button></div>`}
+    <button class="btn gh te" onclick="toast('⬇ సమాచారం డౌన్‌లోడ్')">⬇ సమాచారం డౌన్‌లోడ్</button></div>`;stage().innerHTML=phone(inner,true,'farmerNav',fNav);return;}
+  if(s==='cart'){
+    const t=cart.length*PRODUCTS[0].price,g=Math.round(t*.05),dc=cart.length?getDeliveryCharge(t):0,tot=t+g+dc;
+    const def=addresses.find(a=>a.def)||addresses[0];
+    let body=cart.length?cart.map((x,i)=>`<div class="prod"><div class="pi">🛢️</div><div class="pn"><b class="te">వేప నూనె</b><div class="pr">₹${PRODUCTS[0].price}</div></div><button class="ib" onclick="cart.splice(${i},1);go('cart')">🗑️</button></div>`).join('')+
+      `<div class="alert al-ok"><span>💊</span><span class="te"><b>మోతాదు:</b> 1 ఎకరానికి 5ml/లీ → సురక్షితం ✅</span></div>
+      <div class="card fl"><div style="display:flex;justify-content:space-between;align-items:center"><b class="te" style="font-size:13px">📍 డెలివరీ చిరునామా</b><button class="ib" onclick="go('addaddr')">✏️</button></div><p class="te" style="margin:6px 0 0;font-size:13px;color:var(--onv)">${def?def.label+' — '+def.line+' · '+def.pin:'చిరునామా లేదు'}</p><button class="btn gh te" style="margin-top:2px;padding:6px" onclick="go('addaddr')">＋ కొత్త చిరునామా జోడించండి</button></div>
+      <div class="fld"><label class="te">చెల్లింపు విధానం</label><div class="chiprow" id="payMethods">${['💳 క్రెడిట్ కార్డ్','💳 డెబిట్ కార్డ్','📱 UPI','💵 క్యాష్ ఆన్ డెలివరీ'].map((m,i)=>`<div class="chip ${i==2?'on':''} te" onclick="selC(this)">${m}</div>`).join('')}</div></div>
+      <div class="card fl"><div style="display:flex;justify-content:space-between" class="te"><span>ఉప మొత్తం</span><b>₹${t}</b></div><div style="display:flex;justify-content:space-between;margin-top:6px" class="te"><span>GST 5%</span><b>₹${g}</b></div><div style="display:flex;justify-content:space-between;margin-top:6px" class="te"><span>డెలివరీ ఛార్జీ ${dc===0?'(ఉచితం · ఆర్డర్ విలువ ఆధారంగా)':'(ఆర్డర్ విలువ ఆధారంగా)'}</span><b>₹${dc}</b></div><hr style="border:0;border-top:1px solid var(--ov);margin:10px 0"><div style="display:flex;justify-content:space-between;font-size:18px" class="te"><b>మొత్తం</b><b style="color:var(--primary)">₹${tot}</b></div></div>
+      <button class="btn te" onclick="placeOrder(${tot})">ఆర్డర్ చేయండి</button>`
+      :empty('🛒','మీ కార్ట్ ఖాళీగా ఉంది','ఉత్పత్తులు చూడండి',"go('shop',null,true)");
+    inner=`<div class="ab"><button class="ib" onclick="go('shop')">←</button><div class="ti te" style="font-size:18px">మీ కార్ట్</div></div><div class="body">${body}</div>`;stage().innerHTML=phone(inner,true,'farmerNav',fNav);return;}
+  if(s==='addaddr'){inner=`<div class="ab"><button class="ib" onclick="go('cart')">←</button><div class="ti te" style="font-size:18px">కొత్త చిరునామా</div></div><div class="body"><div class="fld"><label class="te">లేబుల్</label><div class="inp"><input id="addrLabel" class="te" placeholder="ఇల్లు / పొలం"></div></div><div class="fld"><label class="te">పూర్తి చిరునామా</label><div class="inp"><textarea id="addrLine" class="te" style="border:0;outline:0;flex:1;font-family:inherit;font-size:15px"></textarea></div></div><div class="fld"><label class="te">పిన్‌కోడ్</label><div class="inp"><input id="addrPin" placeholder="502285"></div></div><button class="btn te" onclick="addAddress()">చిరునామా సేవ్ చేయండి</button></div>`;stage().innerHTML=phone(inner,true,'farmerNav',fNav);return;}
+  if(s==='orderhist'){inner=`<div class="ab"><button class="ib" onclick="go('home')">←</button><div class="ti te" style="font-size:18px">ఆర్డర్ చరిత్ర</div></div><div class="body">${myOrders.length?myOrders.map(o=>`<div class="card fl" onclick="go('tracking')" style="cursor:pointer"><div style="display:flex;justify-content:space-between"><b class="te">${o.items}</b><span class="stt ${statCls[o.status]||'s-m'}">${o.status}</span></div><div class="te" style="font-size:12px;color:var(--onv);margin-top:4px">${o.id} · ₹${o.amt}</div></div>`).join(''):empty('📦','ఇంకా ఆర్డర్లు లేవు','కొనుగోలుకు వెళ్ళండి',"go('shop',null,true)")}</div>`;stage().innerHTML=phone(inner,true,'farmerNav',fNav);return;}
+  if(s==='invoice'){const o=S.params||myOrders[0];inner=`<div class="ab"><button class="ib" onclick="go('tracking')">←</button><div class="ti te" style="font-size:18px">ఇన్‌వాయిస్</div></div><div class="body"><div class="card"><div style="text-align:center"><b class="te" style="font-size:17px;color:var(--primary)">Krinexa Agri</b><div class="te" style="font-size:11px;color:var(--onv)">ప్రతి రైతుకు నమ్మకమైన తోడు</div></div><hr style="border:0;border-top:1px dashed var(--ov);margin:12px 0"><div class="te" style="font-size:13px"><b>ఆర్డర్:</b> ${o.id}<br><b>ఉత్పత్తి:</b> ${o.items||o.product}<br><b>మొత్తం:</b> ₹${o.amt}<br><b>చెల్లింపు స్థితి:</b> ${o.payStatus||'Paid'}<br><b>తేదీ:</b> ${new Date().toLocaleDateString()}</div></div><button class="btn te" onclick="downloadInvoice('${o.id}','${o.items||o.product}',${o.amt})">⬇ ఇన్‌వాయిస్ డౌన్‌లోడ్ చేయండి</button></div>`;stage().innerHTML=phone(inner,true,'farmerNav',fNav);return;}
+  if(s==='tracking'){inner=`<div class="ab"><button class="ib" onclick="go('home')">←</button><div class="ti te" style="font-size:18px">ఆర్డర్ ట్రాకింగ్</div></div><div class="body"><div class="card fl"><div style="display:flex;gap:12px;align-items:center"><div class="pt" style="width:44px;height:44px">🛢️</div><div style="flex:1"><b class="te">వేప నూనె × 2</b><div class="te" style="font-size:12px;color:var(--onv)">#A-2381 · ₹252</div></div></div></div><div style="margin:16px 4px">${tl('dn','✓','ఆర్డర్ చేయబడింది','సోమ · 9:10 AM')}${tl('dn','✓','ధృవీకరించబడింది','సోమ · 11:30 AM')}${tl('dn','✓','ప్యాక్ చేయబడింది','సోమ · 4:00 PM')}${tl('cu','🚚','రవాణా అయింది','మంగళ · 8:00 AM')}${tl('','5','డెలివరీకి బయలుదేరింది','అంచనా డెలివరీ సమయం: రేపు ఉదయం')}${tl('','6','డెలివరీ','రేపు',1)}</div><button class="btn te" onclick="go('delivered')">డెలివరీ నిర్ధారించండి</button><button class="btn out te" onclick="go('invoice',myOrders[0])">🧾 ఇన్‌వాయిస్ చూడండి</button></div>`;stage().innerHTML=phone(inner,true,'farmerNav',fNav);return;}
+  if(s==='delivered'){myOrders[0].status='Delivered';inner=`<div class="body nn" style="text-align:center;display:flex;flex-direction:column;justify-content:center;height:100%"><div style="font-size:64px">✅</div><h2 class="te" style="margin:10px 0 4px;color:var(--primary)">డెలివరీ పూర్తయింది!</h2><p class="te" style="color:var(--onv)">వేప నూనె × 2 · #A-2381</p><button class="btn te" style="margin:14px 24px 0" onclick="go('invoice',myOrders[0])">🧾 ఇన్‌వాయిస్ డౌన్‌లోడ్</button><button class="btn out te" style="margin:10px 24px 0" onclick="feedbackForm('delivery')">⭐ రేటింగ్ & అభిప్రాయం ఇవ్వండి</button><button class="btn gh te" style="margin:10px 24px 0" onclick="go('home')">హోమ్‌కు వెళ్లండి</button></div>`;stage().innerHTML=phone(inner,false);return;}
+  if(s==='profile'){const f=farmerProfile;inner=`<div class="ab"><div class="ti te">ప్రొఫైల్</div></div><div class="body" style="text-align:center"><div style="width:84px;height:84px;border-radius:50%;background:var(--pc);color:var(--onpc);display:grid;place-items:center;font-size:36px;margin:16px auto;overflow:hidden">${f&&f.photo?'📷':'👨‍🌾'}</div><h3 class="te" style="margin:0">${f?f.name:'రాములు'} గారు</h3><div class="idc te" style="margin:8px 0">🆔 ${f?f.fid:'KRX-F-000247'}</div><p class="te" style="color:var(--onv);font-size:13px">📱 ${f?f.mobile:'98765 43210'} · 🏢 ${f?f.fpo:'శ్రీ అన్నదాత FPC'}</p>${f?`<div class="card fl" style="text-align:left"><div class="te" style="font-size:13px"><b>రాష్ట్రం:</b> ${f.state}<br><b>జిల్లా:</b> ${f.dist}<br><b>మండలం:</b> ${f.mandal}<br><b>గ్రామం:</b> ${f.village}<br><b>పిన్‌కోడ్:</b> ${f.pin}<br><b>పంట:</b> ${f.crop} · ${f.acres} ఎకరాలు</div></div>`:''}<div class="kpis"><div class="kpi" onclick="go('crops',null,true)"><div class="n">2</div><div class="l te">పంటలు</div></div><div class="kpi" onclick="go('advdetail')"><div class="n">7</div><div class="l te">సలహాలు</div></div><div class="kpi" onclick="go('orderhist')"><div class="n">${myOrders.length}</div><div class="l te">ఆర్డర్లు</div></div><div class="kpi"><div class="n">3</div><div class="l te">ఎకరాలు</div></div></div><button class="btn out te" onclick="feedbackForm('advisory')">⭐ అభిప్రాయం ఇవ్వండి</button><button class="btn dl te" onclick="go('welcome');toast('మీరు లాగ్అవుట్ అయ్యారు')">🚪 లాగ్అవుట్ (Sign Out)</button></div>`;stage().innerHTML=phone(inner,true,'farmerNav',fNav);return;}
+}
+function farmerNav(s){go(s,null,['crops','shop'].includes(s));}
+function prodRow(p){return `<div class="prod"><div class="pi" onclick="go('product',PRODUCTS[${PRODUCTS.indexOf(p)}])">${p.e}</div><div class="pn" onclick="go('product',PRODUCTS[${PRODUCTS.indexOf(p)}])"><b class="te">${p.name}</b> <span style="font-size:11px;color:var(--onv)">(${p.nameEn||''})</span><div class="pr">₹${p.price}</div><span class="sbad ${p.stk?'sb-ok':'sb-no'} te">${p.stk?'నిల్వలో':'నిల్వ లేదు'}</span></div><div style="display:flex;flex-direction:column;gap:6px"><button class="addb te" onclick="event.stopPropagation();requireConsent(()=>{cart.push(0);farmerNav('shop')})">కార్ట్</button><button class="addb te" style="background:var(--info)" onclick="event.stopPropagation();requireConsent(()=>{cart=[0];go('cart')})">కొనండి</button></div></div>`;}
+function shopSearch(q){const l=$('prodList');if(!l)return;const f=PRODUCTS.filter(p=>p.name.includes(q)||p.cat.toLowerCase().includes(q.toLowerCase())).slice(0,8);l.innerHTML=f.length?f.map(prodRow).join(''):empty('🔍','ఏ ఉత్పత్తి దొరకలేదు','',null);}
+function cropSearch(q){const g=$('cropGrid');if(!g)return;const ql=q.toLowerCase().trim();const f=CROPLIST.filter(c=>c[0].includes(q)||c[1].toLowerCase().includes(ql));g.innerHTML=f.length?f.map(c=>`<div class="cc ${c[0]===selCrop?'sel':''}" onclick="pickCrop(this,'${c[0]}')"><div class="e">${c[2]}</div><div class="n te">${c[0]}</div><div style="font-size:10px;color:var(--onpc);opacity:.75">${c[1]}</div></div>`).join(''):`<p class="te" style="color:var(--onv);padding:10px">ఏ పంట దొరకలేదు · No crop found</p>`;}
+function cropsScreenSearch(q){const g=$('myCrops');if(!g)return;const ql=q.toLowerCase().trim();const all=[['🌶️','మిర్చి','Chilli'],['🌾','వరి','Paddy / Rice']].concat(CROPLIST.map(c=>[c[2],c[0],c[1]]));const f=all.filter(c=>c[1].includes(q)||c[2].toLowerCase().includes(ql));g.innerHTML=f.length?f.map(c=>`<div class="card fl" style="display:flex;gap:14px;align-items:center"><div style="font-size:30px">${c[0]}</div><div style="flex:1"><b class="te" style="font-size:15px">${c[1]}</b><div style="font-size:11px;color:var(--onv)">${c[2]}</div></div></div>`).join(''):empty('🔍','ఏ పంట దొరకలేదు','',null);}
+function pickCrop(el,name){document.querySelectorAll('#cropGrid .cc').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');selCrop=name;}
+function setAcre(el,v){selC(el);const i=$('acreInp');if(i)i.value=v==='¼'?'0.25':v==='½'?'0.5':v;}
+function micTgl(){const b=$('mic'),st=$('micS'),w=$('wv');const r=b.classList.toggle('rec');st.textContent=r?'వింటోంది...':'నొక్కి మాట్లాడండి';st.classList.add('te');w.classList.toggle('hide',!r);}
+function checkPlotGate(){const v=$('plotArea')?$('plotArea').value.trim():'';const txt=$('askText'),pc=$('photoCard'),pb=$('photoAddBtn');if(!txt||!pc||!pb)return;if(v){txt.disabled=false;txt.style.opacity=1;txt.placeholder='మీ సమస్యను వివరించండి...';pc.style.opacity=1;pb.dataset.locked='0';}else{txt.disabled=true;txt.style.opacity=.5;pc.style.opacity=.5;pb.dataset.locked='1';}}
+function addAskPhoto(el){el.innerHTML='🌿';el.onclick=null;const row=$('photoRow');const add=document.createElement('div');add.className='pt';add.textContent='＋';add.onclick=function(){addAskPhoto(this)};row.appendChild(add);}
+function submitAsk(){requireConsent(()=>{const area=$('plotArea')?$('plotArea').value.trim():'';if(!area){toast('⚠️ ప్లాట్ విస్తీర్ణం తప్పనిసరి');return;}S.lastPlotArea=area;S.lastRemarks='';go('ticket');});}
+function addAddress(){const l=$('addrLabel').value||'కొత్త చిరునామా',ln=$('addrLine').value||'—',p=$('addrPin').value||'—';addresses.forEach(a=>a.def=false);addresses.push({id:addresses.length+1,label:l,line:ln,pin:p,def:true});notify('చిరునామా జోడించబడింది');go('cart');}
+function placeOrder(tot){const method=document.querySelector('#payMethods .on');const isCOD=method&&method.textContent.includes('క్యాష్');const newOrd={id:'#A-'+(2380+myOrders.length+1),product:'వేప నూనె',items:'వేప నూనె × '+cart.length,amt:tot,status:'Booked',eta:'రేపు',payStatus:isCOD?'COD Pending':'Paid'};myOrders.unshift(newOrd);
+  PRODUCTS[0].stk=Math.max(0,PRODUCTS[0].stk-cart.length);
+  ORDERS.unshift({id:newOrd.id,farmer:farmerProfile?farmerProfile.name:'రాములు రెడ్డి',village:farmerProfile?farmerProfile.village:'Kondapur',items:cart.length+' వస్తువులు',amt:'₹'+tot,status:'Booked',ftype:farmerProfile&&farmerProfile.fpo==='Individual'?'Individual':'FPO',product:'వేప నూనె',payStatus:newOrd.payStatus});
+  cart=[];notify('ఆర్డర్ '+newOrd.id+' బుక్ అయింది · స్టాక్ నుండి తగ్గించబడింది');go('tracking');}
+function downloadInvoice(id,items,amt){const txt=`KRINEXA AGRI\nప్రతి రైతుకు నమ్మకమైన తోడు\n---------------------------\nInvoice for Order ${id}\nItems: ${items}\nAmount: ₹${amt}\nDate: ${new Date().toLocaleString()}\n---------------------------\nThank you for choosing Krinexa Agri.`;const blob=new Blob([txt],{type:'text/plain'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='Invoice_'+id.replace('#','')+'.txt';a.click();toast('⬇ ఇన్‌వాయిస్ డౌన్‌లోడ్ అయింది');}
+
+/* ===== SIGNUP ===== */
+function startSignup(){su={step:0,type:'FPO',dist:districts[0],mandal:MANDALS[districts[0]][0]};S.screen='signup';renderSignup();}
+function suDistChange(v){su.dist=v;su.mandal=MANDALS[v][0];renderSignup();}
+function suMandalOptions(){return MANDALS[su.dist||districts[0]].map(m=>`<option ${m===su.mandal?'selected':''}>${m}</option>`).join('');}
+function renderSignup(){
+  const total=5,dots=Array.from({length:total},(_,i)=>`<div class="d ${i<=su.step?'on':''}"></div>`).join('');
+  const head=t=>`<div class="ab"><button class="ib" onclick="suBack()">←</button><div class="ti te" style="font-size:18px">${t}</div></div><div class="steps">${dots}</div>`;
+  let inner='';
+  if(su.step===0)inner=head('రైతు రకం')+`<div class="body nn"><p class="te" style="font-size:16px;font-weight:600;margin-top:10px">మీరు ఎలా నమోదు అవుతారు?</p><div class="tg2" style="flex-direction:column"><div class="o ${su.type==='FPO'?'on':''}" onclick="su.type='FPO';renderSignup()"><span class="ic">🏢</span><span class="te">FPO/FPC అనుబంధ రైతు</span></div><div class="o ${su.type==='IND'?'on':''}" onclick="su.type='IND';renderSignup()"><span class="ic">👤</span><span class="te">వ్యక్తిగత రైతు</span></div></div><button class="btn te" onclick="su.step=1;renderSignup()">కొనసాగించండి ➤</button></div>`;
+  else if(su.step===1)inner=head('ప్రాథమిక సమాచారం')+`<div class="body nn"><div style="text-align:center"><div class="pt" style="width:72px;height:72px;margin:0 auto;font-size:28px" onclick="this.innerHTML='📷';su.photo=true">📷</div><div class="te" style="font-size:11px;color:var(--onv);margin-top:4px">ప్రొఫైల్ ఫోటో జోడించండి</div></div><div class="fld"><label class="te">పేరు *</label><div class="inp"><span style="color:var(--primary)">🎙️</span><input id="suName" class="te" placeholder="మీ పేరు"></div></div><div class="fld"><label class="te">మొబైల్ *</label><div class="inp"><span>📱</span><input id="suMobile" placeholder="98765 43210"></div></div><div class="fld"><label class="te">ఇమెయిల్ <span class="opt-t">(ఐచ్ఛికం)</span></label><div class="inp"><span>📧</span><input id="suEmail" placeholder="ఐచ్ఛికం"></div></div><button class="btn te" style="margin-top:0" onclick="su.name=$('suName').value||'రాములు';su.mobile=$('suMobile').value||'98765 43210';su.email=$('suEmail').value;su.step=2;renderSignup()">తదుపరి ➤</button></div>`;
+  else if(su.step===2)inner=head('ప్రాంత సమాచారం')+`<div class="body nn">${su.type==='FPO'?`<div class="fld"><label class="te">FPO/FPC *</label><div class="inp"><span>🏢</span><select id="suFpo" class="te">${FPOS.map(f=>`<option>${f.name}</option>`).join('')}</select></div></div>`:''}
+      <div class="fld"><label class="te">రాష్ట్రం *</label><div class="inp"><span>🇮🇳</span><input value="${STATE_NAME}" readonly></div></div>
+      <div class="fld"><label class="te">జిల్లా *</label><div class="inp"><span>📍</span><select id="suDist" class="te" onchange="suDistChange(this.value)">${districts.map(d=>`<option ${d===su.dist?'selected':''}>${d}</option>`).join('')}</select></div></div>
+      <div class="fld"><label class="te">మండలం *</label><div class="inp"><select id="suMandal" class="te" onchange="su.mandal=this.value">${suMandalOptions()}</select></div></div>
+      <div class="fld"><label class="te">గ్రామం *</label><div class="inp"><select id="suVillage" class="te">${(VILLAGE_MAP[su.mandal]||villages).map(v=>`<option>${v}</option>`).join('')}</select></div></div>
+      <div class="fld"><label class="te">పిన్‌కోడ్ *</label><div class="inp"><span>📮</span><input id="suPin" placeholder="502 285"></div></div>
+      <button class="btn te" onclick="su.village=$('suVillage').value;su.pin=$('suPin').value||'502285';su.fpo=su.type==='FPO'?$('suFpo').value:'Individual';su.step=3;renderSignup()">తదుపరి ➤</button></div>`;
+  else if(su.step===3)inner=head('పంట సమాచారం')+`<div class="body nn"><div class="srch"><span>🔍</span><input class="te" placeholder="పంట వెతకండి · Paddy / వరి..." oninput="suCropSearch(this.value)"></div><label class="te" style="font-size:13px;color:var(--onv);font-weight:600">పంట *</label><div class="crops" id="suCropGrid" style="margin-top:6px">${CROPLIST.slice(0,6).map((c,i)=>`<div class="cc ${i==0?'sel':''}" data-c="${c[0]}" data-i="${c[2]}" onclick="document.querySelectorAll('#suCropGrid .cc').forEach(x=>x.classList.remove('sel'));this.classList.add('sel')"><div class="e">${c[2]}</div><div class="n te">${c[0]}</div><div style="font-size:10px;opacity:.75">${c[1]}</div></div>`).join('')}</div><div class="fld"><label class="te">విస్తీర్ణం (ఎకరాలు) — మాన్యువల్ / decimal *</label><div class="inp"><span>📐</span><input id="suAcres" inputmode="decimal" placeholder="ఉదా: 0.5, 1.25, 2.75, 10"></div></div><button class="btn te" onclick="const sel=document.querySelector('#suCropGrid .cc.sel');su.crop=sel?sel.dataset.c:'మిర్చి';su.cropIcon=sel?sel.dataset.i:'🌶️';su.acres=$('suAcres').value||'1';su.step=4;renderSignup()">తదుపరి ➤</button></div>`;
+  else if(su.step===4)inner=head('నిర్ధారణ')+`<div class="body nn"><div class="card">${[['రకం',su.type==='FPO'?'FPO/FPC':'వ్యక్తిగత'],['పేరు',su.name],['మొబైల్',su.mobile],['రాష్ట్రం',STATE_NAME],['జిల్లా',su.dist],['మండలం',su.mandal],['గ్రామం',su.village],['పిన్‌కోడ్',su.pin],['FPO/FPC',su.fpo],['పంట',su.crop+' · '+su.acres+' ఎకరాలు']].map(r=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--ov)" class="te"><span style="color:var(--onv);font-size:13px">${r[0]}</span><b style="font-size:13px">${r[1]}</b></div>`).join('')}</div><button class="btn te" onclick="finishSignup()">నమోదు పూర్తి చేయండి ✓</button></div>`;
+  else if(su.step===5){const fid=farmerProfile?farmerProfile.fid:'KRX-F-'+String(500+FARMERS.length+1).padStart(6,'0');const f=farmerProfile||{};stage().innerHTML=`<div class="phone fade"><div class="sb"><span>9:41</span><span class="net">🟢 Online</span></div><div class="body nn" style="text-align:center;display:flex;flex-direction:column;justify-content:center;height:100%"><div style="font-size:64px">🎉</div><h2 class="te" style="margin:10px 0 4px;color:var(--primary)">నమోదు విజయవంతం!</h2><div style="background:#E8F5E9;border:2px dashed var(--primary);border-radius:16px;padding:18px;margin:16px 24px"><div class="te" style="font-size:12px;color:#1B5E20">మీ ఫార్మర్ ఐడీ</div><div style="font-size:26px;font-weight:800;letter-spacing:2px;color:#1B5E20">${fid}</div></div><div class="card fl" style="margin:0 24px;text-align:left"><div class="te" style="font-size:13px"><b>పేరు:</b> ${f.name}<br><b>మొబైల్:</b> ${f.mobile}<br><b>పంట:</b> ${f.cropIcon} ${f.crop}<br><b>విస్తీర్ణం:</b> ${f.acres} ఎకరాలు<br><b>గ్రామం:</b> ${f.village}<br><b>పిన్‌కోడ్:</b> ${f.pin}</div></div><p class="te" style="font-size:11px;color:var(--onv);margin:8px 24px 0">ఈ వివరాలు మీ ప్రొఫైల్‌లో ఖచ్చితంగా అలాగే కనిపిస్తాయి.</p><button class="btn te" style="margin:16px 24px 0" onclick="go('home')">డాష్‌బోర్డ్ ➤</button></div></div>`;return;}
+  stage().innerHTML=`<div class="phone fade"><div class="sb"><span>9:41</span><span class="net">🟢 Online</span></div>${inner}</div>`;
+}
+function finishSignup(){const fid='KRX-F-'+String(500+FARMERS.length+1).padStart(6,'0');farmerProfile={fid:fid,name:su.name,mobile:su.mobile,email:su.email,state:STATE_NAME,dist:su.dist,mandal:su.mandal,village:su.village,pin:su.pin,fpo:su.fpo,crop:su.crop,cropIcon:su.cropIcon||'🌶️',acres:su.acres,photo:su.photo};notify('రైతు నమోదు అయ్యారు');su.step=5;renderSignup();}
+function suBack(){if(su.step===0){go('welcome');return;}su.step--;renderSignup();}
+function suCropSearch(q){const g=$('suCropGrid');if(!g)return;const ql=q.toLowerCase().trim();const f=CROPLIST.filter(c=>c[0].includes(q)||c[1].toLowerCase().includes(ql));g.innerHTML=f.length?f.map(c=>`<div class="cc" data-c="${c[0]}" data-i="${c[2]}" onclick="document.querySelectorAll('#suCropGrid .cc').forEach(x=>x.classList.remove('sel'));this.classList.add('sel')"><div class="e">${c[2]}</div><div class="n te">${c[0]}</div><div style="font-size:10px;opacity:.75">${c[1]}</div></div>`).join(''):`<p class="te" style="color:var(--onv);padding:10px">ఏ పంట దొరకలేదు</p>`;}
+
+/* ===== FIELD ===== */
+const fldNav=[['home','🏠',['home'],'హోమ్'],['farmers','👥',['farmers','fdetail'],'రైతులు'],['orders','📦',['orders'],'ఆర్డర్లు'],['perf','📊',['perf'],'పనితీరు']];
+function renderField(){
+  const s=S.screen;let inner='';
+  if(s==='login'){stage().innerHTML=`<div class="phone fade"><div class="sb"><span>9:41</span><span class="net">🟢 Online</span></div><div class="body nn" style="display:flex;flex-direction:column;justify-content:center;height:100%;padding:0 24px"><div style="text-align:center;font-size:56px">🧑‍💼</div><h2 class="te" style="color:var(--primary);text-align:center;margin:8px 0 16px">ఫీల్డ్ స్టాఫ్ లాగిన్</h2>
+      <div class="fld"><label class="te">ఉద్యోగి ID లేదా ఇమెయిల్ (Employee ID / Email)</label><div class="inp"><span>🧑‍💼</span><input value="EMP-21"></div></div>
+      <div class="fld"><label class="te">పాస్‌వర్డ్ (Password)</label><div class="inp"><span>🔒</span><input type="password" value="••••••"></div></div>
+      <div class="fld"><label class="te">OTP <span class="opt-t">(ఐచ్ఛికం · Optional)</span></label><div class="inp"><span>🔢</span><input placeholder="optional"></div></div>
+      <p style="font-size:11px;color:var(--onv)" class="te">⚠️ యాక్టివ్ ఉద్యోగులకు మాత్రమే అనుమతి (Only active employees)</p>
+      <button class="btn te" onclick="go('home')">లాగిన్ ➤</button></div></div>`;return;}
+  if(s==='home'){const pendingAdv=ADV.filter(a=>a.status==='Open'||a.status==='Assigned').length;
+    const followHtml=FOLLOWUPS.length?('<div class="st te">స్వయంచాలక ఫాలో-అప్‌లు</div>'+FOLLOWUPS.map(f=>`<div class="card fl te" style="font-size:13px"><b>${f.farmer}</b> — ${f.reason} <span class="stt s-w">${f.date}</span></div>`).join('')):'';
+    inner=`<div class="ab"><div style="flex:1"><div class="grt te" style="font-size:20px">నమస్కారం, సరిత 👋</div><div class="su te">ఫీల్డ్ ఆఫీసర్ · 8 గ్రామాలు</div></div><button class="ib">🔔<span class="badge">2</span></button></div><div class="body"><div class="kpis"><div class="kpi" onclick="go('farmers',null,true)"><div class="n">248</div><div class="l te">నా రైతులు</div></div><div class="kpi" onclick="go('orders')"><div class="n">96</div><div class="l te">ఆర్డర్లు</div></div><div class="kpi" onclick="go('advqueue',null,true)"><div class="n">${pendingAdv}</div><div class="l te">పెండింగ్ సలహాలు (మొత్తం) ›</div></div><div class="kpi"><div class="n">94%</div><div class="l te">లక్ష్యం</div></div></div><div class="st te">ఈరోజు పనులు</div><div class="card" style="display:flex;gap:12px;align-items:center" onclick="go('visit')"><span style="font-size:24px">📋</span><div style="flex:1"><b class="te">3 ఫాలో-అప్ సందర్శనలు</b><div class="te" style="font-size:12px;color:var(--onv)">కొండాపూర్</div></div><span>›</span></div>${followHtml}</div>`;stage().innerHTML=phone(inner,true,'fieldNav',fldNav);return;}
+  if(s==='farmers'){let body;if(S.loading)body=`<div class="srch sk" style="height:36px"></div>${skelList(5)}`;else{
+      const byVillage={};FARMERS.slice(0,60).forEach(f=>{(byVillage[f.village]=byVillage[f.village]||[]).push(f);});
+      body=`<div class="srch"><span>🔍</span><input class="te" placeholder="పేరు/ఐడీతో వెతకండి..." oninput="fldFarmerSearch(this.value)"></div><div id="fFList">${Object.keys(byVillage).map(v=>`<div class="mandal-grp te">📍 ${v} <span class="cnt">${byVillage[v].length}</span></div>${byVillage[v].map(f=>fldFarmerRow(f,FARMERS.indexOf(f))).join('')}`).join('')}</div>`;
+    }inner=`<div class="ab"><div class="ti te">రైతులు (${FARMERS.length})</div></div><div class="body">${body}</div>`;stage().innerHTML=phone(inner,true,'fieldNav',fldNav);return;}
+  if(s==='fdetail'){const i=(S.params&&S.params.i)||0,f=FARMERS[i];
+    const sec=(t,rows)=>`<div class="card fl"><div class="te" style="font-weight:700;font-size:14px;margin-bottom:8px">${t}</div>${rows.map(r=>`<div style="display:flex;justify-content:space-between;padding:4px 0" class="te"><span style="color:var(--onv);font-size:13px">${r[0]}</span><b style="font-size:13px">${r[1]}</b></div>`).join('')}</div>`;
+    inner=`<div class="ab"><button class="ib" onclick="go('farmers',null,true)">←</button><div class="ti te" style="font-size:17px">రైతు ప్రొఫైల్</div></div>
+      <div class="body"><div style="text-align:center;margin-bottom:6px"><div style="width:70px;height:70px;border-radius:50%;background:var(--pc);display:grid;place-items:center;font-size:30px;margin:0 auto">👤</div><h3 class="te" style="margin:8px 0 2px">${f.name}</h3><div class="idc te">🆔 ${f.id}</div></div>
+        ${sec('📋 ప్రాథమిక సమాచారం (Basic)',[['పేరు',f.name],['మొబైల్','98765 43210'],['ఇమెయిల్',f.email||'—'],['గ్రామం',f.village],['జిల్లా',f.dist],['FPO/FPC',f.fpo]])}
+        ${sec('🌱 పంట సమాచారం (Crop)',[['ప్రస్తుత పంట',f.crop[0]+' '+f.crop[1]],['విస్తీర్ణం',f.acres+' ఎకరాలు'],['పంట చరిత్ర','2 సీజన్లు']])}
+        ${sec('📝 సలహా సమాచారం (Advisory)',[['అభ్యర్థనలు',f.adv],['స్థితి','2 Open · '+(f.adv-2>0?f.adv-2:0)+' Closed'],['చరిత్ర','చూడండి ›']])}
+        ${sec('📦 ఆర్డర్ సమాచారం (Orders)',[['ఆర్డర్లు',f.orders],['స్థితి','1 దారిలో'],['కొనుగోలు చరిత్ర','₹'+(f.orders*350)]])}
+        ${sec('💳 చెల్లింపు సమాచారం (Payment)',[['చెల్లింపు స్థితి','✅ పూర్తి'],['ఇన్‌వాయిస్‌లు',f.orders]])}
+        ${sec('⭐ అభిప్రాయం (Feedback)',[['సలహా రేటింగ్','4.5 ★'],['ఉత్పత్తి రేటింగ్','4.2 ★']])}
+        <button class="btn out te" onclick="go('visit')">📋 సందర్శన నివేదిక</button></div>`;
+    stage().innerHTML=phone(inner,true,'fieldNav',fldNav);return;}
+  if(s==='orders'){let body;if(S.loading)body=skelList(6);else body=ORDERS.slice(0,14).map((o,oi)=>`<div class="card fl"><div style="display:flex;justify-content:space-between"><b class="te">${o.product}</b><span class="stt ${statCls[o.status]||'s-m'}">${o.status}</span></div><div class="te" style="font-size:12px;color:var(--onv);margin-top:4px">${o.id} · ${o.farmer} · ${o.village}</div><div style="display:flex;gap:8px;margin-top:6px"><span class="stt ${o.payStatus==='Paid'?'s-ok':'s-w'}">💳 ${o.payStatus}</span></div>${o.status==='Delivered'?'':o.payStatus==='COD Pending'?`<button class="btn out te" style="margin-top:8px" onclick="confirmOnlinePayment(${oi})">💳 ఆన్‌లైన్ చెల్లింపు నిర్ధారించండి (required for COD)</button>`:`<button class="btn tonal te" style="margin-top:8px" onclick="ORDERS[${oi}].status='Delivered';notify('✅ డెలివరీ పూర్తి చేయబడింది');go('orders',null,true)">డెలివరీ పూర్తి చేయండి</button>`}</div>`).join('');inner=`<div class="ab"><div class="ti te">ఆర్డర్లు</div></div><div class="body">${body}</div>`;stage().innerHTML=phone(inner,true,'fieldNav',fldNav);return;}
+  if(s==='visit'){inner=`<div class="ab"><button class="ib" onclick="go('home')">←</button><div class="ti te" style="font-size:18px">సందర్శన నివేదిక</div></div><div class="body"><div class="fld"><label class="te">రైతు</label><div class="inp"><span>👤</span><select id="visitFarmer" class="te">${FARMERS.slice(0,5).map(f=>`<option>${f.name} · ${f.id}</option>`).join('')}</select></div></div><div class="fld"><label class="te">గమనికలు (Voice)</label><div class="inp" style="align-items:flex-start"><span style="color:var(--primary)">🎙️</span><textarea class="te" rows="2" style="border:0;outline:0;width:100%;font-family:inherit;font-size:15px;resize:none" placeholder="సందర్శన గమనికలు..."></textarea></div></div><div class="fld"><label class="te">📷 ఫోటోలు అప్‌లోడ్</label><div style="display:flex;gap:10px"><div class="pt" onclick="this.innerHTML='🌿'">📷</div><div class="pt" onclick="this.innerHTML='🌾'">📷</div><div class="pt">＋</div></div></div><div class="fld"><label class="te">ఫలితం (Outcome) *</label><div class="chiprow" id="outcomeChips"><div class="chip te" onclick="selC(this)" data-v="Purchased">✅ కొన్నారు (Purchased)</div><div class="chip te" onclick="selC(this)" data-v="Not Purchased">❌ కొనలేదు (Not Purchased)</div><div class="chip te" onclick="selC(this)" data-v="Purchased Outside">↗️ బయట కొన్నారు (Outside)</div></div></div><div class="fld"><label class="te">ఫాలో-అప్ తేదీ</label><div class="inp"><input type="date"></div></div><button class="btn te" onclick="submitVisit()">నివేదిక సమర్పించండి</button></div>`;stage().innerHTML=phone(inner,true,'fieldNav',fldNav);return;}
+  if(s==='advqueue'){
+    const pending=ADV.map((a,i)=>({a,i})).filter(x=>x.a.status==='Open'||x.a.status==='Assigned');
+    const done=ADV.map((a,i)=>({a,i})).filter(x=>x.a.status==='Closed').slice(0,5);
+    inner=`<div class="ab"><button class="ib" onclick="go('home')">←</button><div class="ti te" style="font-size:18px">మొత్తం సలహా అభ్యర్థనలు</div></div><div class="body">
+      <div class="kpis"><div class="kpi"><div class="n">${pending.length}</div><div class="l te">పెండింగ్ టోకెన్లు</div></div><div class="kpi"><div class="n">${done.length}</div><div class="l te">ఇటీవల పూర్తయినవి</div></div></div>
+      <div class="st te">పెండింగ్ టోకెన్లు</div>
+      ${pending.slice(0,10).map(x=>`<div class="card fl"><div style="display:flex;justify-content:space-between"><b class="te">${x.a.id}</b><span class="stt ${statCls[x.a.status]||'s-w'}">${x.a.status}</span></div><div class="te" style="font-size:13px;margin-top:4px">${x.a.farmer} · ${x.a.crop} · 📐 ${x.a.plotArea}</div>${x.a.remarks?`<div class="te" style="font-size:12px;color:var(--onv);margin-top:4px">📝 Agronomist: ${x.a.remarks}</div>`:''}<button class="btn tonal te" style="margin-top:8px" onclick="openOutcomeModal(${x.i})">✅ పూర్తి చేయండి (Mark Completed)</button></div>`).join('')}
+      ${!pending.length?empty('✅','పెండింగ్ టోకెన్లు లేవు','',null):''}
+    </div>`;
+    stage().innerHTML=phone(inner,true,'fieldNav',fldNav);return;}
+  if(s==='perf'){inner=`<div class="ab"><div class="ti te">నా పనితీరు</div></div><div class="body"><div class="card"><div class="te" style="font-weight:700;margin-bottom:10px">ఈ నెల</div><canvas id="pf" height="160"></canvas></div><div class="kpis"><div class="kpi"><div class="n">142</div><div class="l te">నమోదు</div></div><div class="kpi"><div class="n">89</div><div class="l te">సందర్శనలు</div></div><div class="kpi"><div class="n">56</div><div class="l te">ఆర్డర్లు</div></div><div class="kpi"><div class="n">₹84K</div><div class="l te">అమ్మకాలు</div></div></div></div>`;stage().innerHTML=phone(inner,true,'fieldNav',fldNav);setTimeout(()=>{const c=$('pf');if(c)new Chart(c,{type:'bar',data:{labels:['వా1','వా2','వా3','వా4'],datasets:[{data:[28,35,42,37],backgroundColor:'#2E7D32',borderRadius:6}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true},x:{grid:{display:false}}}}});},60);return;}
+}
+function fieldNav(s){go(s,null,s==='farmers');}
+function fldFarmerRow(f,i){return `<div class="card fl" style="display:flex;gap:12px;align-items:center;cursor:pointer" onclick="go('fdetail',{i:${i}})"><div style="width:42px;height:42px;border-radius:50%;background:var(--pc);display:grid;place-items:center">👤</div><div style="flex:1"><b class="te">${f.name}</b><div style="font-size:11px;color:#1B5E20;font-weight:700">${f.id}</div><div class="te" style="font-size:12px;color:var(--onv)">${f.village} · ${f.crop[0]} ${f.crop[1]}</div></div><span style="color:var(--onv)">›</span></div>`;}
+function fldFarmerSearch(q){const l=$('fFList');if(!l)return;const f=FARMERS.map((x,i)=>[x,i]).filter(([x])=>x.name.includes(q)||x.id.toLowerCase().includes(q.toLowerCase())).slice(0,8);l.innerHTML=f.length?f.map(([x,i])=>fldFarmerRow(x,i)).join(''):empty('🔍','ఏ రైతు దొరకలేదు','',null);}
+function selO(el){el.parentNode.querySelectorAll('.o').forEach(o=>o.classList.remove('on'));el.classList.add('on');}
+function updMgr(n){const f=FPOS.find(x=>x.name===n)||FPOS[0];$('mgrL').innerHTML=`పేరు: ${f.mgr} · ${f.desig}<br>📱 ${f.mob} · 📧 ${f.email}`;}
+function confirmOnlinePayment(oi){ORDERS[oi].payStatus='Paid';notify('✅ ఆన్‌లైన్ చెల్లింపు నిర్ధారించబడింది · ఇప్పుడు డెలివరీ పూర్తి చేయవచ్చు');go('orders',null,true);}
+function openOutcomeModal(i){const a=ADV[i];$('modalRoot').innerHTML=`<div class="modal"><div class="bx" style="max-width:400px"><h3 class="te" style="margin:0 0 4px">${a.id} పూర్తి చేయండి</h3><p class="te" style="font-size:12px;color:var(--onv);margin:0 0 12px">${a.farmer} · ${a.crop}</p><label class="te" style="font-size:13px;font-weight:600">ఫలితం ఎంచుకోండి (Outcome) *</label><div class="chiprow" id="outcomeChips2"><div class="chip te" onclick="selC(this)" data-v="Purchased">✅ కొన్నారు</div><div class="chip te" onclick="selC(this)" data-v="Not Purchased">❌ కొనలేదు</div><div class="chip te" onclick="selC(this)" data-v="Purchased Outside">↗️ బయట కొన్నారు</div></div><button class="btn te" onclick="confirmOutcome(${i})">నిర్ధారించండి</button><button class="btn gh te" onclick="closeModal()">రద్దు చేయండి</button></div></div>`;}
+function confirmOutcome(i){const sel=document.querySelector('#outcomeChips2 .on');if(!sel){toast('⚠️ ఫలితం ఎంచుకోవడం తప్పనిసరి');return;}const outcome=sel.dataset.v,a=ADV[i];a.status='Closed';a.outcome=outcome;if(outcome==='Purchased'){a.orderStatus='Booked';notify('టోకెన్ పూర్తయింది · ఆర్డర్ స్థితి: కొన్నారు (Purchased) గా నమోదు');}else{FOLLOWUPS.push({farmer:a.farmer,reason:outcome,date:'3 రోజుల్లో'});notify('టోకెన్ పూర్తయింది · ఫాలో-అప్ టాస్క్ స్వయంచాలకంగా సృష్టించబడింది');}closeModal();go('advqueue',null,true);}
+function submitVisit(){const sel=document.querySelector('#outcomeChips .on');if(!sel){toast('⚠️ ఫలితం ఎంచుకోవడం తప్పనిసరి');return;}const outcome=sel.dataset.v,farmer=$('visitFarmer').value;if(outcome!=='Purchased'){FOLLOWUPS.push({farmer:farmer,reason:outcome,date:'3 రోజుల్లో'});notify('నివేదిక సమర్పించబడింది · ఫాలో-అప్ సృష్టించబడింది');}else notify('నివేదిక సమర్పించబడింది');go('home');}
+
+/* ===== AGRONOMIST ===== */
+const ADVCATS=['పంట నిర్వహణ','పురుగు నిర్వహణ','వ్యాధి నిర్వహణ','ఉత్పత్తి మార్గదర్శనం'];
+const ADVPRI=['High','Medium','Low'];
+const advStatuses=['Open','Assigned','In Review','Recommendation Provided','Farmer Acknowledged','Closed'];
+const advSc={'Open':'s-w','Assigned':'s-i','In Review':'s-i','Recommendation Provided':'s-p','Farmer Acknowledged':'s-ok','Closed':'s-ok'};
+function renderAgronomist(){
+  const s=S.screen;
+  if(s==='login'){stage().innerHTML=loginScreen('🌾 Agronomist Login','renderAgronomist',()=>{S.screen='dash';renderAgronomist();});return;}
+  const nav={br:'🌾 Agronomist',items:[['dash','📊','Dashboard'],['queue','🎫','Ticket Queue'],['broadcast','📢','Broadcast Advisory'],['perf','📈','Performance']]};
+  const ctx='Dr. అనిత · Agronomist<br>Crops: మిర్చి, వరి, పత్తి';
+  const cat=i=>ADVCATS[i%4], pri=i=>ADVPRI[i%3], stt=i=>advStatuses[i%6];
+  const priCls=p=>p==='High'?'s-bd':p==='Medium'?'s-w':'s-m';
+  let c='';
+  if(s==='dash'){if(S.loading)c=topbar('Agronomist Dashboard')+`<div class="ct2">${skelKpi()}${skelKpi()}</div>`;else c=topbar('Agronomist Dashboard · Dr. అనిత','<span class="stt s-i">🔄 Live</span>')+`<div class="ct2"><div class="dk"><div class="dc a" onclick="go('queue',null,true)"><div class="n">14</div><div class="l">Open Tickets ›</div></div><div class="dc b" onclick="go('queue',null,true)"><div class="n">9</div><div class="l">Assigned ›</div></div><div class="dc p" onclick="go('queue',null,true)"><div class="n">5</div><div class="l">In Review ›</div></div><div class="dc g"><div class="n">128</div><div class="l">Closed</div></div></div><div class="dk"><div class="dc t"><div class="n">96%</div><div class="l">SLA Compliance</div></div><div class="dc k"><div class="n">3.2h</div><div class="l">Avg Resolution</div></div><div class="dc g"><div class="n">4.6★</div><div class="l">Farmer Rating</div></div><div class="dc b"><div class="n">92%</div><div class="l">Quality Score</div></div></div><div class="g2"><div class="pan"><h3>Recent Tickets <span class="gw"></span><button class="db pri" onclick="go('queue',null,true)">View Queue</button></h3>${dataTable(['Ticket','Farmer','Crop','Category','Priority','Status','Plot Area'],ADV.slice(0,7).map((a,i)=>`<tr class="clk" onclick="go('ticket',{i:${i}})"><td>${a.id}</td><td class="te">${a.farmer}</td><td class="te">${a.crop}</td><td class="te">${cat(i)}</td><td><span class="stt ${priCls(pri(i))}">${pri(i)}</span></td><td><span class="stt ${advSc[stt(i)]}">${stt(i)}</span></td><td>${a.plotArea}</td></tr>`).join(''))}</div><div class="pan"><h3>SLA Trend</h3><canvas id="agsla" height="160"></canvas><button class="db ed" style="margin-top:12px;width:100%" onclick="feedbackAnalytics()">📊 View Feedback Analytics</button></div></div></div>`;}
+  else if(s==='queue'){if(S.loading)c=topbar('Ticket Queue')+`<div class="ct2"><div class="pan">${skelList(7)}</div></div>`;else{const rows=ADV.slice(0,14).map((a,i)=>`<tr class="clk" onclick="go('ticket',{i:${i}})"><td>${a.id}</td><td class="te">${a.farmer}</td><td class="te">${a.crop}</td><td class="te">${cat(i)}</td><td><span class="stt ${priCls(pri(i))}">${pri(i)}</span></td><td><span class="stt ${advSc[stt(i)]}">${stt(i)}</span></td><td>${a.plotArea}</td><td><button class="db ed">Open</button></td></tr>`).join('');c=topbar('Advisory Ticket Queue')+`<div class="ct2"><div class="pan"><h3>Tickets (${ADV.length}) <span class="gw"></span><span class="stt s-m">Crop · Pest · Disease · Product Guidance</span></h3><div class="srch"><span>🔍</span><input placeholder="Search tickets, farmers..."></div>${dataTable(['Ticket','Farmer','Crop','Category','Priority','Status','Plot Area',''],rows)}</div></div>`;}}
+  else if(s==='ticket'){const i=(S.params&&S.params.i)||0,a=ADV[i];c=topbar('Ticket '+a.id,'<button class="db ed" onclick="go(\'queue\',null,true)">← Queue</button>')+`<div class="ct2"><div class="g2"><div class="pan"><h3>Advisory Request</h3><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><span class="stt ${advSc[stt(i)]}">${stt(i)}</span><span class="stt s-m te">${cat(i)}</span><span class="stt ${priCls(pri(i))}">${pri(i)} Priority</span></div><table><tr><td style="border:0;color:var(--onv)">Farmer</td><td style="border:0" class="te">${a.farmer}</td></tr><tr><td style="border:0;color:var(--onv)">Farmer ID</td><td style="border:0;color:#1B5E20;font-weight:700">KRX-F-${String(i+1).padStart(6,'0')}</td></tr><tr><td style="border:0;color:var(--onv)">Crop</td><td style="border:0" class="te">${a.crop}</td></tr><tr><td style="border:0;color:var(--onv)">Plot Area</td><td style="border:0" class="te">${a.plotArea}</td></tr></table><p class="te" style="font-size:13px;background:var(--s1);padding:12px;border-radius:10px;margin-top:8px">వివరణ: ఆకులపై మచ్చలు, పంట దెబ్బతింటోంది.</p><div style="display:flex;gap:10px;margin-top:8px"><div class="pt" style="width:72px;height:72px">🌿</div><div class="pt" style="width:72px;height:72px">🍂</div></div><div class="mf"><button class="db ed" onclick="toast('Assigned to Dr. అనిత')">Assign to me</button><button class="db tr" onclick="toast('Priority escalated')">Escalate Priority</button></div></div><div class="pan"><h3>Provide Recommendation</h3><div class="fg"><div class="f" style="grid-column:1/3"><label>Issue Summary</label><input value="మిర్చిలో తామర పురుగు"></div><div class="f" style="grid-column:1/3"><label>Recommendation</label><input value="వేప నూనె పిచికారీ చేయండి"></div><div class="f"><label>Product</label><select>${PRODUCTS.slice(0,6).map(p=>`<option>${p.name}</option>`).join('')}</select></div><div class="f"><label>Dosage</label><input value="5ml / లీటరు"></div><div class="f"><label>Application Method</label><input value="ఆకులపై పిచికారీ"></div><div class="f"><label>Safety</label><input value="మాస్క్ ధరించండి"></div><div class="f" style="grid-column:1/3"><label>Additional Remarks <span style="font-weight:400;color:var(--onv)">(optional · visible to Farmer & Field Staff)</span></label><input id="remarksInp" value="${a.remarks||''}" placeholder="ఏవైనా అదనపు వ్యాఖ్యలు..."></div><div class="f"><label>Follow-up Date</label><input type="date"></div></div><button class="db pri" style="margin-top:14px;width:100%" onclick="a.remarks=$('remarksInp').value;S.lastRemarks=a.remarks;toast('✅ Recommendation Provided · Farmer & Field Staff notified');go('queue',null,true)">Provide Recommendation → Notify Farmer</button></div></div></div>`;}
+  else if(s==='broadcast'){c=topbar('Broadcast Advisory','<button class="db pri" onclick="sendBroadcast()">📢 Send Broadcast</button>')+`<div class="ct2"><div class="pan"><h3>New Area & Crop-wise Broadcast <span class="gw"></span><span class="stt s-m">Climate events: floods, droughts, heatwaves</span></h3><div class="fg"><div class="f"><label>District(s)</label><select multiple id="bcDist" style="height:80px">${districts.map(d=>`<option selected>${d}</option>`).join('')}</select></div><div class="f"><label>Crop(s)</label><select multiple id="bcCrop" style="height:80px">${CROPLIST.slice(0,6).map(c=>`<option>${c[0]}</option>`).join('')}</select></div><div class="f"><label>Event Type</label><select id="bcEvent"><option>Flood / వరద</option><option>Drought / కరువు</option><option>Heatwave / వడగాలులు</option><option>Pest Outbreak / పురుగు వ్యాప్తి</option></select></div><div class="f"><label>Severity</label><select id="bcSev"><option>High</option><option>Medium</option><option>Low</option></select></div><div class="f" style="grid-column:1/3"><label>Message (తెలుగు)</label><input id="bcMsg" placeholder="రైతులకు తెలియజేయవలసిన సందేశం"></div><div class="f" style="grid-column:1/3"><label>Attach Image</label><div class="pt" onclick="this.innerHTML='🌧️'">📷</div></div></div></div><div class="pan"><h3>Sent Broadcasts</h3>${dataTable(['ID','Area','Crop','Severity','Date'],BROADCASTS.map(b=>`<tr><td>${b.id}</td><td class="te">${b.area}</td><td class="te">${b.crop}</td><td><span class="stt s-bd">${b.sev}</span></td><td>${b.date}</td></tr>`).join(''))}</div></div>`;}
+  else if(s==='perf'){c=topbar('My Performance')+`<div class="ct2"><div class="dk"><div class="dc g"><div class="n">128</div><div class="l">Tickets Resolved</div></div><div class="dc b"><div class="n">3.2h</div><div class="l">Avg Resolution Time</div></div><div class="dc t"><div class="n">4.6★</div><div class="l">Farmer Ratings</div></div><div class="dc p"><div class="n">92%</div><div class="l">Advisory Quality Score</div></div></div><div class="pan"><h3>Resolution Trend</h3><canvas id="agperf" height="180"></canvas></div></div>`;}
+  stage().innerHTML=dashShell(nav,s,ctx,'agroNav',c);
+  setTimeout(()=>{if(s==='dash'&&!S.loading&&$('agsla'))new Chart(agsla,{type:'line',data:{labels:['Mon','Tue','Wed','Thu','Fri','Sat'],datasets:[{label:'SLA %',data:[94,96,95,97,96,98],borderColor:'#2E7D32',tension:.4}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:false},x:{grid:{display:false}}}}});if(s==='perf'&&$('agperf'))new Chart(agperf,{type:'bar',data:{labels:['వా1','వా2','వా3','వా4'],datasets:[{data:[28,34,30,36],backgroundColor:'#2E7D32',borderRadius:6}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true},x:{grid:{display:false}}}}});},60);
+}
+function agroNav(s){go(s,null,['dash','queue'].includes(s));}
+function sendBroadcast(){const msg=$('bcMsg').value||'హెచ్చరిక సందేశం';BROADCASTS.unshift({id:'BC-'+(BROADCASTS.length+1),area:districts.join(', ')+' జిల్లాలు',crop:'ఎంచుకున్న పంటలు',msg:msg,sev:$('bcSev').value,date:'ఇప్పుడే',img:'🌧️'});notify('ప్రసార సలహా పంపబడింది · రైతులకు తెలియజేయబడింది');go('broadcast');}
+
+/* ===== FEEDBACK ===== */
+function feedbackForm(type){const types=[['advisory','సలహా (Advisory)'],['product','ఉత్పత్తి (Product)'],['delivery','డెలివరీ (Delivery)'],['fieldstaff','ఫీల్డ్ స్టాఫ్ (Support)'],['fpo','FPO/FPC']];$('modalRoot').innerHTML=`<div class="modal"><div class="bx" style="max-width:420px"><h3 style="margin:0 0 12px" class="te">అభిప్రాయం ఇవ్వండి · Feedback</h3><div class="fld"><label class="te">వర్గం</label><div class="inp"><select id="fbType" class="te">${types.map(t=>`<option value="${t[0]}" ${t[0]===type?'selected':''}>${t[1]}</option>`).join('')}</select></div></div><div class="fld"><label class="te">రేటింగ్ (1–5)</label><div id="fbStars" style="font-size:32px;cursor:pointer;letter-spacing:4px">${[1,2,3,4,5].map(n=>`<span onclick="setStars(${n})" data-n="${n}">☆</span>`).join('')}</div></div><div class="fld"><label class="te">ఇది ఉపయోగపడిందా?</label><div class="chiprow"><div class="chip on te" onclick="selC(this)">అవును 👍</div><div class="chip te" onclick="selC(this)">లేదు 👎</div></div></div><div class="fld"><label class="te">వ్యాఖ్యలు</label><div class="inp" style="align-items:flex-start"><textarea class="te" rows="2" style="border:0;outline:0;width:100%;font-family:inherit;font-size:15px;resize:none" placeholder="మీ అభిప్రాయం..."></textarea></div></div><div style="display:flex;gap:10px"><button class="btn te" style="margin-top:0" onclick="closeModal();toast('🙏 మీ అభిప్రాయానికి ధన్యవాదాలు')">సమర్పించండి</button><button class="db no" onclick="closeModal()">Cancel</button></div></div></div>`;}
+function setStars(n){document.querySelectorAll('#fbStars span').forEach(s=>{const on=+s.dataset.n<=n;s.textContent=on?'★':'☆';s.style.color=on?'#F9A825':'';});}
+function feedbackAnalytics(){const bar=(l,v,c)=>`<div style="margin:9px 0"><div style="display:flex;justify-content:space-between;font-size:13px"><span>${l}</span><b>${v} / 5</b></div><div style="height:9px;background:#eee;border-radius:5px;overflow:hidden;margin-top:3px"><i style="display:block;height:100%;width:${v/5*100}%;background:${c}"></i></div></div>`;$('modalRoot').innerHTML=`<div class="modal"><div class="bx" style="max-width:460px"><h3 style="margin:0 0 14px">📊 Feedback & Satisfaction Analytics</h3>${bar('Product Ratings',4.3,'#2E7D32')}${bar('Advisory Ratings',4.6,'#1565C0')}${bar('Delivery Ratings',4.1,'#F9A825')}${bar('Employee / Field Staff',4.4,'#6A1B9A')}${bar('FPO/FPC Satisfaction',4.2,'#00695C')}<button class="db pri" style="margin-top:10px" onclick="closeModal()">Close</button></div></div>`;}
+
+/* ===== FPO PORTAL ===== */
+function renderFPO(){
+  const s=S.screen;
+  if(s==='login'){stage().innerHTML=loginScreen('🏢 FPO/FPC Portal Login','renderFPO',()=>{S.screen='dash';renderFPO();});return;}
+  const nav={br:'🏢 FPO Portal',items:[['dash','📊','Dashboard'],['farmers','👥','Farmers'],['orders','📦','Your Orders'],['procure','📥','Procurement'],['advisory','📝','Advisory'],['reports','📈','Reports'],['notif','🔔','Notifications']]};
+  const ctx='శ్రీ అన్నదాత FPC · Medak<br>Mgr: '+FPOS[0].mgr;
+  let c='';
+  if(s==='dash'){if(S.loading)c=topbar('Manager Dashboard')+`<div class="ct2">${skelKpi()}${skelKpi()}</div>`;else c=topbar('Manager Dashboard · శ్రీ అన్నదాత')+`<div class="ct2"><div class="dk"><div class="dc g" onclick="go('farmers',null,true)"><div class="n">248</div><div class="l">Total Farmers ›</div></div><div class="dc b" onclick="go('farmers',null,true)"><div class="n">201</div><div class="l">Active ›</div></div><div class="dc t"><div class="n">+18</div><div class="l">New This Month</div></div><div class="dc k"><div class="n">4</div><div class="l">Villages</div></div></div><div class="dk"><div class="dc a" onclick="go('advisory')"><div class="n">14</div><div class="l">Open Advisory ›</div></div><div class="dc g"><div class="n">28</div><div class="l">Closed</div></div><div class="dc p" onclick="go('procure',null,true)"><div class="n">5</div><div class="l">Procurement ›</div></div><div class="dc b" onclick="go('orders')"><div class="n">96</div><div class="l">Your Orders ›</div></div></div><div class="g2 ev"><div class="pan"><h3>Crop-wise</h3><canvas id="fc" height="180"></canvas></div><div class="pan"><h3>Village-wise</h3><canvas id="fv" height="180"></canvas></div></div></div>`;}
+  else if(s==='farmers'){if(S.loading)c=topbar('Farmer Management')+`<div class="ct2"><div class="pan">${skelList(6)}</div></div>`;else{const rows=FARMERS.slice(0,12).map(f=>`<tr class="clk" onclick="toast('${f.name} · ${f.id}')"><td class="te">${f.name}</td><td style="color:#1B5E20;font-weight:700">${f.id}</td><td>${f.village}</td><td class="te">${f.crop[1]}</td><td>${f.orders}</td></tr>`).join('');c=topbar('Farmer Management')+`<div class="ct2"><div class="pan"><h3>My Farmers <span class="gw"></span><span class="stt s-m">248 · 201 active · +18 new</span></h3><div class="srch"><span>🔍</span><input placeholder="Search farmers, IDs..." oninput="fpoSearch(this.value)"></div><div id="fpoTbl">${dataTable(['Farmer','ID','Village','Crop','Orders'],rows)}</div></div></div>`;}}
+  else if(s==='orders'){const rows=ORDERS.slice(0,12).map(o=>`<tr class="clk" onclick="toast('${o.id}')"><td>${o.id}</td><td class="te">${o.farmer}</td><td>${o.village}</td><td>${o.amt}</td><td><span class="stt ${statCls[o.status]}">${o.status}</span></td></tr>`).join('');c=topbar('Your Orders')+`<div class="ct2"><div class="pan"><h3>Your Orders (${ORDERS.length})</h3><div class="srch"><span>🔍</span><input placeholder="Search orders..."></div>${dataTable(['Order','Farmer','Village','Amount','Status'],rows)}</div></div>`;}
+  else if(s==='procure'){if(S.loading)c=topbar('Procurement')+`<div class="ct2"><div class="pan">${skelList(5)}</div></div>`;else{const my=PROC.slice(0,8).map(p=>`<tr class="clk" onclick="procTrack('${p.id}','${p.status}')"><td>${p.id}</td><td>${p.prod}</td><td>${p.val}</td><td><span class="stt ${statCls[p.status]||'s-m'}">${p.status}</span></td><td><button class="db ed">Track</button></td></tr>`).join('');c=topbar('Procurement → Krinexa','<button class="db pri" onclick="raiseProc()">＋ Raise Request</button>')+`<div class="ct2"><div class="dk"><div class="dc a"><div class="n">2</div><div class="l">Pending</div></div><div class="dc g"><div class="n">2</div><div class="l">Approved</div></div><div class="dc b"><div class="n">8</div><div class="l">Delivered</div></div><div class="dc k"><div class="n">₹2.4L</div><div class="l">Value</div></div></div><div class="pan"><h3>History & Pending</h3>${dataTable(['Request','Products','Value','Status',''],my)}</div></div>`;}}
+  else if(s==='advisory'){const rows=ADV.slice(0,10).map(a=>`<tr class="clk"><td>${a.id}</td><td class="te">${a.farmer}</td><td class="te">${a.crop}</td><td><span class="stt ${statCls[a.status]}">${a.status}</span></td></tr>`).join('');c=topbar('Advisory Tracking')+`<div class="ct2"><div class="dk"><div class="dc b"><div class="n">42</div><div class="l">Raised</div></div><div class="dc a"><div class="n">14</div><div class="l">Open</div></div><div class="dc g"><div class="n">28</div><div class="l">Closed</div></div><div class="dc r"><div class="n">2</div><div class="l">Escalations</div></div></div><div class="pan"><h3>Tickets</h3>${dataTable(['Ticket','Farmer','Crop','Status'],rows)}</div></div>`;}
+  else if(s==='reports'){if(S.loading)c=topbar('Reports')+`<div class="ct2"><div class="pan">${skelList(4)}</div></div>`;else c=topbar('Reports')+`<div class="ct2"><div class="g2 ev">${['👥 Farmer Performance','🌾 Crop Analytics','📦 Procurement','💰 Sales'].map(r=>`<div class="pan"><h3>${r}</h3><p style="font-size:13px;color:var(--onv);margin:0 0 12px">Filter: village, crop, season, date.</p><button class="db pri">⬇ PDF</button> <button class="db ok">⬇ Excel</button></div>`).join('')}</div></div>`;}
+  else if(s==='notif'){const N=[['#2E7D32','✅','Request Approved','#PR-1041','1h'],['#1565C0','🚚','Dispatched','#PR-1039','3h'],['#F9A825','✏️','Modified','#PR-1036','5h']];c=topbar('Notifications','<span class="stt s-m">In-App · SMS · WhatsApp · Email</span>')+`<div class="ct2"><div class="pan">${N.map(n=>`<div class="nt"><div class="ni2" style="background:${n[0]};color:#fff">${n[1]}</div><div class="nb"><b>${n[2]}</b><p>${n[3]}</p></div><span class="tm">${n[4]}</span></div>`).join('')}</div></div>`;}
+  stage().innerHTML=dashShell(nav,s,ctx,'fpoNav',c);
+  setTimeout(()=>{if(s==='dash'&&!S.loading){if($('fc'))new Chart(fc,{type:'doughnut',data:{labels:['Chilli','Paddy','Cotton','G.nut'],datasets:[{data:[110,68,42,28],backgroundColor:['#2E7D32','#66BB6A','#F9A825','#1565C0']}]},options:{plugins:{legend:{position:'bottom'}}}});if($('fv'))new Chart(fv,{type:'bar',data:{labels:['Kondapur','Aloor','Pati','Cheriyal'],datasets:[{data:[120,64,38,26],backgroundColor:'#2E7D32',borderRadius:5}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true},x:{grid:{display:false}}}}});}},60);
+}
+function fpoNav(s){go(s,null,['dash','farmers','procure','reports'].includes(s));}
+function fpoSearch(q){const t=$('fpoTbl');if(!t)return;const f=FARMERS.filter(x=>x.name.includes(q)||x.id.toLowerCase().includes(q.toLowerCase())).slice(0,12);t.innerHTML=f.length?dataTable(['Farmer','ID','Village','Crop','Orders'],f.map(x=>`<tr><td class="te">${x.name}</td><td style="color:#1B5E20;font-weight:700">${x.id}</td><td>${x.village}</td><td class="te">${x.crop[1]}</td><td>${x.orders}</td></tr>`).join('')):empty('🔍','No farmers found','',null);}
+function raiseProc(){$('modalRoot').innerHTML=`<div class="modal"><div class="bx"><h3 style="margin:0 0 4px">Raise Procurement Request → Krinexa</h3><p style="font-size:12px;color:var(--onv);margin:0 0 14px">Auto ID · FPC: శ్రీ అన్నదాత</p><div class="fg"><div class="f"><label>Contact</label><input value="A. Rao"></div><div class="f"><label>Mobile</label><input value="98765 00000"></div><div class="f"><label>Expected Delivery</label><input type="date"></div><div class="f"><label>Special Instructions</label><input></div></div><h4 style="margin:14px 0 8px;font-size:14px">Products</h4>${dataTable(['Product','Qty','Unit'],`<tr><td>Neem Oil</td><td><input value="500" style="width:60px;padding:6px;border:1px solid var(--ov);border-radius:6px"></td><td>L</td></tr>`)}<div style="display:flex;gap:10px;margin-top:16px"><button class="db ed" onclick="closeModal()">Save Draft</button><button class="db pri" onclick="closeModal();notify('Procurement #PR-1100 submitted');go('procure',null,true)">Submit →</button><span style="flex:1"></span><button class="db no" onclick="closeModal()">Cancel</button></div></div></div>`;}
+function procTrack(id,status){const steps=['Submitted','Under Review','Approved','Order Created','Dispatched','Delivered','Closed'];let idx=steps.indexOf(status);if(idx<0)idx=1;$('modalRoot').innerHTML=`<div class="modal"><div class="bx" style="max-width:440px"><h3 style="margin:0 0 14px">${id} — Status</h3><div style="margin:8px 4px">${steps.map((st,i)=>tl(i<idx?'dn':i===idx?'cu':'',i<idx?'✓':i===idx?'●':i+1,st,'',i===steps.length-1)).join('')}</div><button class="db pri" onclick="closeModal()">Close</button></div></div>`;}
+
+/* ===== ADMIN ===== */
+function renderAdmin(){
+  const s=S.screen;
+  if(s==='login'){stage().innerHTML=loginScreen('🛠️ Krinexa Admin Login','renderAdmin',()=>{S.screen='master';renderAdmin();});return;}
+  const nav={br:'🛠️ Krinexa Admin',items:[{g:'Control Center'},['master','🌐','Master Dashboard'],['procctl','📥','Procurement Control'],['delivery','🚚','Delivery Monitoring'],['advmon','🔍','Advisory Monitoring'],['sla','📊','SLA Monitoring'],['consent','🔒','Consent & Privacy'],{g:'Master Data'},['farmermaster','🧑‍🌾','Farmer Master'],['fpo','🏢','FPO/FPC Mgmt'],['emp','🧑‍💼','Employee Mgmt'],['prod','📦','Product Mgmt'],['cropm','🌾','Crop Master'],['location','🗺️','Location Master'],['advcfg','🏷️','Advisory Config'],['inv','🏪','Inventory'],{g:'Branding'},['branding','🖼️','Logo & Branding'],{g:'Insights'},['analytics','📈','Analytics'],['feedback','⭐','Feedback Analytics']]};
+  const ctx='Krinexa Admin · Global access<br>All FPOs · Individual farmers';
+  const mAct='<button class="db ok">Edit</button> <button class="db ed">Activate</button> <button class="db no">Deactivate</button>';
+  let c='';
+  if(s==='master'){if(S.loading)c=topbar('Master Dashboard')+`<div class="ct2">${skelKpi()}${skelKpi()}</div>`;else c=topbar('Master Dashboard','<span class="stt s-i">🔄 Live</span>')+`<div class="ct2"><div class="dk"><div class="dc g" onclick="go('farmermaster',null,true)"><div class="n">500</div><div class="l">Total Farmers (combined) ›</div></div><div class="dc b" onclick="go('fpoGroups')"><div class="n">400</div><div class="l">FPO Farmers ›</div></div><div class="dc k" onclick="go('indivFarmers',null,true)"><div class="n">100</div><div class="l">Individual Farmers ›</div></div><div class="dc p" onclick="go('fpo')"><div class="n">10</div><div class="l">Active FPOs ›</div></div></div><div class="dk"><div class="dc b" onclick="go('advmon')"><div class="n">200</div><div class="l">Advisories ›</div></div><div class="dc a" onclick="go('sla')"><div class="n">96%</div><div class="l">SLA % ›</div></div><div class="dc g" onclick="go('analytics')"><div class="n">₹12.4L</div><div class="l">Sales ›</div></div><div class="dc t" onclick="go('procctl',null,true)"><div class="n">100</div><div class="l">Procurement ›</div></div></div><div class="g2"><div class="pan"><h3>FPO/FPC Groups <span class="gw"></span><span class="stt s-m">Click a group to see mapped farmers</span></h3>${dataTable(['FPO/FPC','District','Farmers','Active',''],FPOS.slice(0,6).map((f,i)=>`<tr class="clk" onclick="go('fpoFarmers',{i:${i}})"><td class="te">${f.name}</td><td>${f.dist}</td><td>${f.farmers}</td><td>${f.active}</td><td><button class="db ed">View Farmers</button></td></tr>`).join(''))}</div><div class="pan"><h3>Farmer Split</h3><canvas id="ms" height="200"></canvas></div></div></div>`;}
+  else if(s==='fpoGroups'){const rows=FPOS.map((f,i)=>`<tr class="clk" onclick="go('fpoFarmers',{i:${i}})"><td class="te">${f.name}</td><td>${f.dist}</td><td>${f.farmers}</td><td>${f.active}</td><td><button class="db ed">View Farmers</button></td></tr>`).join('');c=topbar('FPO/FPC Groups','<button class="db ed" onclick="go(\'master\',null,true)">← Master Dashboard</button>')+`<div class="ct2"><div class="pan"><h3>All FPO/FPC Groups (${FPOS.length})</h3>${dataTable(['FPO/FPC','District','Farmers','Active',''],rows)}</div></div>`;}
+  else if(s==='fpoFarmers'){const i=(S.params&&S.params.i)||0,f=FPOS[i];const list=FARMERS.filter(x=>x.fpo===f.name).slice(0,20);c=topbar('Farmers mapped to '+f.name,'<button class="db ed" onclick="go(\'fpoGroups\')">← Groups</button>')+`<div class="ct2"><div class="pan"><h3>${f.name} <span class="gw"></span><span class="stt s-m">${f.farmers} total farmers</span></h3>${dataTable(['Farmer','ID','Village','Crop','Orders'],list.map(x=>`<tr><td class="te">${x.name}</td><td style="color:#1B5E20;font-weight:700">${x.id}</td><td>${x.village}</td><td class="te">${x.crop[1]}</td><td>${x.orders}</td></tr>`).join(''))}</div></div>`;}
+  else if(s==='indivFarmers'){if(S.loading)c=topbar('Individual Farmers')+`<div class="ct2"><div class="pan">${skelList(6)}</div></div>`;else{const list=FARMERS.filter(x=>x.fpo==='Individual');c=topbar('Individual Farmers (flat list)','<button class="db ed" onclick="go(\'master\',null,true)">← Master Dashboard</button>')+`<div class="ct2"><div class="pan"><h3>Individual Farmers (${list.length})</h3><div class="srch"><span>🔍</span><input placeholder="Search individual farmers..."></div>${dataTable(['Farmer','ID','Village','District','Crop'],list.slice(0,20).map(x=>`<tr><td class="te">${x.name}</td><td style="color:#1B5E20;font-weight:700">${x.id}</td><td>${x.village}</td><td>${x.dist}</td><td class="te">${x.crop[1]}</td></tr>`).join(''))}</div></div>`;}}
+  else if(s==='farmermaster'){if(S.loading)c=topbar('Farmer Master')+`<div class="ct2"><div class="pan">${skelList(6)}</div></div>`;else{c=topbar('Farmer Master','<button class="db pri" onclick="exportFarmers(\'pdf\')">⬇ PDF</button> <button class="db ok" onclick="exportFarmers(\'excel\')">⬇ Excel</button>')+`<div class="ct2"><div class="pan"><h3>Filters</h3><div class="fg"><div class="f"><label>District</label><select id="fmDist"><option value="">All</option>${districts.map(d=>`<option>${d}</option>`).join('')}</select></div><div class="f"><label>Mandal</label><select id="fmMandal"><option value="">All</option>${Object.values(MANDALS).flat().map(m=>`<option>${m}</option>`).join('')}</select></div><div class="f"><label>Village</label><select id="fmVillage"><option value="">All</option>${villages.map(v=>`<option>${v}</option>`).join('')}</select></div><div class="f"><label>FPO / Individual</label><select id="fmType"><option value="">All</option><option>FPO</option><option>Individual</option>${FPOS.map(f=>`<option>${f.name}</option>`).join('')}</select></div></div><button class="db pri" style="margin-top:10px" onclick="admFarmerFilter()">Apply Filters</button></div><div class="pan"><h3>Farmers (500)</h3><div id="fmTbl">${dataTable(['Farmer','ID','Village','District','FPO/Individual','Crop'],FARMERS.slice(0,14).map(x=>`<tr><td class="te">${x.name}</td><td style="color:#1B5E20;font-weight:700">${x.id}</td><td>${x.village}</td><td>${x.dist}</td><td class="te">${x.fpo}</td><td class="te">${x.crop[1]}</td></tr>`).join(''))}</div></div></div>`;}}
+  else if(s==='procctl'){if(S.loading)c=topbar('Procurement Control')+`<div class="ct2"><div class="pan">${skelList(6)}</div></div>`;else{const rows=PROC.slice(0,12).map(p=>`<tr><td>${p.id}</td><td class="te">${p.fpo}</td><td>${p.prod}</td><td>${p.val}</td><td><span class="stt ${statCls[p.status]||'s-m'}">${p.status}</span></td><td><button class="db ok" onclick="toast('Approved')">✓</button> <button class="db ed">✏️</button> <button class="db no">✕</button></td></tr>`).join('');c=topbar('Procurement Control Center','<button class="db pri">＋ Create PO</button>')+`<div class="ct2"><div class="dk"><div class="dc b"><div class="n">100</div><div class="l">Total</div></div><div class="dc a"><div class="n">2</div><div class="l">Pending</div></div><div class="dc g"><div class="n">2</div><div class="l">Approved</div></div><div class="dc r"><div class="n">1</div><div class="l">Shortage</div></div></div><div class="pan"><h3>All Requests</h3><div class="srch"><span>🔍</span><input placeholder="Search requests, FPOs..."></div>${dataTable(['Request','FPO/FPC','Products','Value','Status','Actions'],rows)}</div></div>`;}}
+  else if(s==='delivery'){const rows=ORDERS.slice(0,12).map(o=>`<tr class="clk"><td>${o.id}</td><td class="te">${o.farmer}</td><td>${o.village}</td><td><span class="stt s-m">${o.ftype}</span></td><td><span class="stt ${statCls[o.status]||'s-i'}">${o.status}</span></td><td>${o.status==='Delivered'?'<span class="stt s-ok">On time</span>':o.status==='Dispatched'?'<span class="stt s-w">In transit</span>':'<span class="stt s-m">Pending</span>'}</td><td><button class="db ed" onclick="toast('Delivery status updated')">Update</button></td></tr>`).join('');c=topbar('Delivery Monitoring · Delivery Manager','<button class="db pri" onclick="configDelivery()">⚙️ Configure Charges</button>')+`<div class="ct2"><div class="dk"><div class="dc b"><div class="n">23</div><div class="l">In Transit</div></div><div class="dc g"><div class="n">48</div><div class="l">Delivered Today</div></div><div class="dc a"><div class="n">12</div><div class="l">Out for Delivery</div></div><div class="dc r"><div class="n">2</div><div class="l">Delayed (SLA)</div></div></div><div class="pan"><h3>Dispatch & Delivery Tracking <span class="gw"></span><span class="stt s-m">Delivery Charge tiers: ${DELIVERY_TIERS.map(t=>'₹'+t.min+'-'+(t.max>=999999?'∞':t.max)+'→₹'+t.charge).join(' · ')}</span></h3><div class="srch"><span>🔍</span><input placeholder="Search orders, farmers..."></div>${dataTable(['Order','Farmer','Village','Farmer Type','Status','SLA','Action'],rows)}</div></div>`;}
+  else if(s==='advmon'){const rows=ADV.slice(0,14).map((a,i)=>`<tr class="clk" onclick="advMon(${i})"><td>${a.id}</td><td class="te">${a.farmer}</td><td class="te">${a.crop}</td><td class="te">${ADVCATS[i%4]}</td><td><span class="stt ${advSc[advStatuses[i%6]]}">${advStatuses[i%6]}</span></td><td>${a.sla}</td><td><button class="db ed">View</button></td></tr>`).join('');c=topbar('Advisory Monitoring','<span class="stt s-m">Read-only · Full lifecycle</span>')+`<div class="ct2"><div class="dk"><div class="dc a"><div class="n">14</div><div class="l">Open</div></div><div class="dc b"><div class="n">9</div><div class="l">Assigned</div></div><div class="dc g"><div class="n">128</div><div class="l">Closed</div></div><div class="dc t"><div class="n">96%</div><div class="l">SLA Compliance</div></div></div><div class="pan"><h3>All Advisory Tickets (read-only)</h3><div class="srch"><span>🔍</span><input placeholder="Search tickets, farmers..."></div>${dataTable(['Ticket','Farmer','Crop','Category','Status','SLA',''],rows)}</div></div>`;}
+  else if(s==='sla'){c=topbar('SLA Monitoring','<span class="stt s-i">🔄 Live</span>')+`<div class="ct2"><div class="dk"><div class="dc g"><div class="n">142</div><div class="l">&gt;12h</div></div><div class="dc a"><div class="n">38</div><div class="l">6–12h</div></div><div class="dc r"><div class="n">11</div><div class="l">&lt;6h</div></div><div class="dc k"><div class="n">3</div><div class="l">Breached</div></div></div><div class="g2"><div class="pan"><h3>At-Risk Tickets</h3>${dataTable(['Ticket','Crop','FPO','Left','Action'],ADV.filter(a=>a.status!=='Closed').slice(0,6).map(a=>`<tr class="clk"><td>${a.id}</td><td class="te">${a.crop}</td><td class="te">అన్నదాత</td><td><span class="stt s-w">${a.sla}</span></td><td><button class="db ed">Reassign</button></td></tr>`).join(''))}</div><div class="pan"><h3>Compliance Trend</h3><canvas id="sl" height="200"></canvas></div></div></div>`;}
+  else if(s==='fpo'){const rows=FPOS.map((f,i)=>`<tr class="clk"><td class="te">${f.name}</td><td>REG-${1001+i}</td><td class="te">${f.mgr}</td><td>${f.dist}</td><td>${MANDALS[f.dist][0]}</td><td>${(VILLAGE_MAP[MANDALS[f.dist][0]]||villages)[0]}</td><td>50${1000+i}</td><td>${f.farmers}</td><td><span class="stt s-ok">Active</span></td><td>${mAct}</td></tr>`).join('');c=topbar('FPO/FPC Management','<button class="db pri" onclick="addFpoForm()">＋ Add FPO/FPC</button>')+`<div class="ct2"><div class="pan"><h3>All FPOs/FPCs (${FPOS.length})</h3><div class="srch"><span>🔍</span><input placeholder="Search FPOs..."></div>${dataTable(['Name','Reg','Manager','District','Mandal','Village','Pincode','Farmers','Status','Actions'],rows)}</div></div>`;}
+  else if(s==='emp'){if(S.loading)c=topbar('Employee Management')+`<div class="ct2"><div class="pan">${skelList(6)}</div></div>`;else{const rows=EMP.map(e=>`<tr class="clk"><td>${e.id}</td><td class="te">${e.name}</td><td>${e.role}</td><td>${e.dept}</td><td>${e.locs.map(l=>`<span class="stt s-m" style="margin:2px">${l.dist}/${l.mandal}/${l.village} · ${l.pin}</span>`).join('<br>')}</td><td class="te">${e.fpo}</td><td><span class="stt ${e.status==='Active'?'s-ok':'s-bd'}">${e.status}</span></td><td>${mAct}</td></tr>`).join('');c=topbar('Employee Management','<button class="db pri" onclick="empLocForm()">＋ Add Employee</button>')+`<div class="ct2"><div class="pan"><h3>All Employees (${EMP.length}) <span class="gw"></span><span class="stt s-m">Territory → District / Mandal / Village / Pincode, multi-location</span></h3><div class="srch"><span>🔍</span><input placeholder="Search employees..."></div>${dataTable(['ID','Name','Role','Dept','Locations (District/Mandal/Village · Pin)','FPO','Status','Actions'],rows)}</div></div>`;}}
+  else if(s==='prod'){if(S.loading)c=topbar('Product Management')+`<div class="ct2"><div class="pan">${skelList(6)}</div></div>`;else{const rows=PRODUCTS.slice(0,12).map(p=>`<tr class="clk" onclick="setApp('farmer');go('product',PRODUCTS[${PRODUCTS.indexOf(p)}])"><td>${p.photo?'📷':p.e}</td><td class="te">${p.name} <span style="color:var(--onv);font-size:11px">(${p.nameEn})</span></td><td>${p.cat}</td><td>${p.id}</td><td>₹${p.price}</td><td>${p.stk}</td><td><span class="stt ${p.stk>50?'s-ok':p.stk>0?'s-w':'s-bd'}">${p.stk>50?'In stock':p.stk>0?'Low':'Out'}</span></td><td><button class="db ok">Edit</button></td></tr>`).join('');c=topbar('Product Management','<button class="db pri" onclick="addProductForm()">＋ Add Product (11-section)</button>')+`<div class="ct2"><div class="pan"><h3>Catalog (${PRODUCTS.length}) <span class="gw"></span><span class="stt s-i">Auto-syncs everywhere · Stock auto-deducts on sale</span></h3><div class="srch"><span>🔍</span><input placeholder="Search products..." oninput="admProdSearch(this.value)"></div><div id="apTbl">${dataTable(['Photo','Name (TE/EN)','Category','SKU','Price','Stock','Status',''],rows)}</div></div></div>`;}}
+  else if(s==='cropm'){const rows=CROPLIST.map((c2,i)=>`<tr class="clk"><td style="font-size:22px">${c2[2]}</td><td class="te">${c2[0]}</td><td>${c2[1]}</td><td><button class="db ed" onclick="toast('📷 Upload crop image/icon')">📷 Image</button></td><td><span class="stt ${i%7?'s-ok':'s-bd'}">${i%7?'Active':'Inactive'}</span></td><td>${mAct}</td></tr>`).join('');c=topbar('Crop Master','<button class="db pri" onclick="masterForm(\'Crop\',[\'Crop Name (Telugu)\',\'Crop Name (English)\',\'Icon\'])">＋ Add Crop</button>')+`<div class="ct2"><div class="pan"><h3>Crop Master Data <span class="gw"></span><span class="stt s-m">Only admin-approved crops appear platform-wide</span></h3><div class="srch"><span>🔍</span><input placeholder="Search crops..."></div>${dataTable(['Icon','Telugu','English','Image / Icon','Status','Actions'],rows)}</div></div>`;}
+  else if(s==='location'){
+    const distRows=districts.map((d,i)=>`<tr><td>DST-${100+i}</td><td>${d}</td><td>${MANDALS[d].length}</td><td><span class="stt s-ok">Active</span></td><td>${mAct}</td></tr>`).join('');
+    const mandalRows=Object.entries(MANDALS).flatMap(([d,ms])=>ms.map(m=>[d,m])).map(([d,m],i)=>`<tr><td>MND-${300+i}</td><td>${m}</td><td>${d}</td><td>${(VILLAGE_MAP[m]||[]).length}</td><td><span class="stt s-ok">Active</span></td><td>${mAct}</td></tr>`).join('');
+    const villRows=Object.entries(VILLAGE_MAP).flatMap(([m,vs])=>vs.map(v=>[m,v])).map(([m,v],i)=>`<tr><td>VIL-${200+i}</td><td>${v}</td><td>${m}</td><td>${districtOfMandal(m)}</td><td><span class="stt s-ok">Active</span></td><td>${mAct}</td></tr>`).join('');
+    c=topbar('Location Master','<span class="stt s-m">State → District → Mandal → Village · used as cascading dropdowns platform-wide</span>')+`<div class="ct2">
+      <div class="pan"><h3>State</h3>${dataTable(['State','Status'],`<tr><td class="te">${STATE_NAME}</td><td><span class="stt s-ok">Active</span></td></tr>`)}</div>
+      <div class="pan"><h3>Districts <span class="gw"></span><button class="db pri" onclick="masterForm('District',['District Code','District Name'])">＋ Add District</button></h3>${dataTable(['Code','District','Mandals','Status','Actions'],distRows)}</div>
+      <div class="pan"><h3>Mandals <span class="gw"></span><button class="db pri" onclick="masterForm('Mandal',['Mandal Code','Mandal Name','District'])">＋ Add Mandal</button></h3>${dataTable(['Code','Mandal','District','Villages','Status','Actions'],mandalRows)}</div>
+      <div class="pan"><h3>Villages <span class="gw"></span><button class="db pri" onclick="masterForm('Village',['Village Code','Village Name','Mandal'])">＋ Add Village</button></h3>${dataTable(['Code','Village','Mandal','District','Status','Actions'],villRows)}</div>
+    </div>`;}
+  else if(s==='advcfg'){
+    const cats2=['Pest','Disease','Nutrition','Irrigation','Product Guidance','Others'];
+    const pris=[['Critical','s-bd',4],['High','s-bd',3],['Medium','s-w',2],['Low','s-m',1]];
+    const statusW=[['Open',1.5],['Assigned',1.3],['In Review',1.1],['Recommendation Provided',0.8],['Farmer Acknowledged',0.5],['Closed',0.2]];
+    const matrix=`<table class="matrix"><tr><th>Category \\ Category Priority</th>${pris.map(p=>`<th><span class="stt ${p[1]}">${p[0]}</span></th>`).join('')}</tr>${cats2.map(cat=>`<tr><td class="te" style="text-align:left;font-weight:600">${cat}</td>${pris.map(p=>{const rank=((cats2.indexOf(cat)+1))*p[2];return `<td><span class="rankdot" style="background:${rank>=18?'#C62828':rank>=9?'#F9A825':'#2E7D32'}"></span> ${rank}</td>`;}).join('')}</tr>`).join('')}</table>`;
+    const liveRows=ADV.slice(0,10).map((a,i)=>{const cat=cats2[i%cats2.length],catW=cats2.indexOf(cat)+1,pri=pris[i%4],st=statusW[i%6];const score=computeRank(catW,pri[2],st[1]);return{a,cat,pri,st,score};}).sort((x,y)=>y.score-x.score);
+    const liveTbl=dataTable(['Rank','Ticket','Farmer','Category','Category Priority','Ticket Status','Score'],liveRows.map((r,idx)=>`<tr><td><b>#${idx+1}</b></td><td>${r.a.id}</td><td class="te">${r.a.farmer}</td><td class="te">${r.cat}</td><td><span class="stt ${r.pri[1]}">${r.pri[0]}</span></td><td><span class="stt ${advSc[r.st[0]]||'s-m'}">${r.st[0]}</span></td><td><b>${r.score.toFixed(1)}</b></td></tr>`).join(''));
+    c=topbar('Advisory Configuration','<span class="stt s-m">Merged Ticket Priority × Category Priority matrix · auto rank calculated</span>')+`<div class="ct2">
+    <div class="pan"><h3>Ticket Rank Formula <span class="gw"></span><span class="stt s-m">Category × Category Priority × Ticket Urgency (Status)</span></h3><p style="font-size:12px;color:var(--onv);margin:0 0 10px">Score = Category weight × Category-Priority weight (Critical/High/Medium/Low) × Status-urgency weight. Higher score = ranked higher in the ticket queue, sorted automatically.</p>${matrix}</div>
+    <div class="pan"><h3>Live Ranked Ticket Queue (auto-sorted, highest priority first)</h3>${liveTbl}</div>
+    <div class="g2 ev"><div class="pan"><h3>Categories <span class="gw"></span><button class="db pri" onclick="masterForm('Category',['Category Name','Weight (1-6)'])">＋ Add</button></h3>${dataTable(['Category','Status','Actions'],cats2.map(x=>`<tr><td>${x}</td><td><span class="stt s-ok">Active</span></td><td>${mAct}</td></tr>`).join(''))}</div><div class="pan"><h3>Category Priority Levels <span class="gw"></span><button class="db pri" onclick="masterForm('Priority',['Priority Name','Weight (1-4)'])">＋ Add</button></h3>${dataTable(['Priority','Status','Actions'],pris.map(p=>`<tr><td><span class="stt ${p[1]}">${p[0]}</span></td><td><span class="stt s-ok">Active</span></td><td>${mAct}</td></tr>`).join(''))}<p style="font-size:12px;color:var(--onv);margin-top:10px">Admin chooses Critical / High / Medium / Low for each category. Agronomists may escalate ticket urgency — rank recalculates automatically.</p></div></div></div>`;
+  }
+  else if(s==='inv'){c=topbar('Inventory')+`<div class="ct2"><div class="dk"><div class="dc a"><div class="n">5</div><div class="l">Low Stock</div></div><div class="dc r"><div class="n">3</div><div class="l">Out of Stock</div></div><div class="dc k"><div class="n">7</div><div class="l">Expiring &lt;30d</div></div><div class="dc g"><div class="n">185</div><div class="l">Healthy SKUs</div></div></div><div class="pan"><h3>⚠️ Inventory Alerts (Low · Expiring · Out of Stock)</h3>${dataTable(['Product','Alert','Detail'],PRODUCTS.slice(0,6).map((p,ix)=>{const lvl=p.stk===0?['Out of Stock','s-bd','0 units']:p.stk<40?['Low Stock','s-w',p.stk+' units left']:['Expiring Soon','s-w','Batch B-'+(100+ix)+' · exp '+((ix%12)+1)+'/2027'];return `<tr><td class="te">${p.name}</td><td><span class="stt ${lvl[1]}">${lvl[0]}</span></td><td>${lvl[2]}</td></tr>`;}).join(''))}</div><div class="g2"><div class="pan"><h3>Stock Levels (batch + expiry, auto-deducts on sale)</h3>${dataTable(['Product','Batch','Expiry','On Hand','Status'],PRODUCTS.slice(0,8).map(p=>`<tr><td class="te">${p.name}</td><td>B-${rnd(100,999)}</td><td>${rnd(1,12)}/2027</td><td><b>${p.stk}</b></td><td><span class="stt ${p.stk>50?'s-ok':p.stk>0?'s-w':'s-bd'}">${p.stk>50?'OK':p.stk>0?'Low':'Out'}</span></td></tr>`).join(''))}</div><div class="pan"><h3>By Category</h3><canvas id="iv" height="220"></canvas></div></div></div>`;}
+  else if(s==='analytics'){if(S.loading)c=topbar('Analytics')+`<div class="ct2"><div class="pan"><div class="sk" style="height:200px"></div></div></div>`;else c=topbar('Analytics & Reports','<button class="db pri">⬇ Export</button>')+`<div class="ct2"><div class="g2"><div class="pan"><h3>Sales & Advisories</h3><canvas id="tr" height="200"></canvas></div><div class="pan"><h3>Top Crops</h3><canvas id="cr" height="200"></canvas></div></div><div class="pan"><h3>Report Library</h3><div class="mf">${['Inventory','Product','Revenue','SLA','Delivery','FPO Performance'].map(r=>`<span class="stt s-m">📄 ${r}</span>`).join('')}</div></div></div>`;}
+  else if(s==='consent'){const rows=(CONSENTS.length?CONSENTS:[{farmer:'రాములు రెడ్డి',date:'ఈరోజు 9:40 AM',procurement:true,photo:true},{farmer:'లక్ష్మి నాయుడు',date:'నిన్న',procurement:true,photo:false}]).map(c2=>`<tr><td class="te">${c2.farmer}</td><td>${c2.date}</td><td><span class="stt ${c2.procurement?'s-ok':'s-bd'}">${c2.procurement?'✅ Accepted':'❌ Not given'}</span></td><td><span class="stt ${c2.photo?'s-ok':'s-bd'}">${c2.photo?'✅ Accepted':'❌ Not given'}</span></td></tr>`).join('');c=topbar('Consent & Privacy','<span class="stt s-m">Procurement consent · Photo upload consent</span>')+`<div class="ct2"><div class="dk"><div class="dc g"><div class="n">${CONSENTS.length||2}</div><div class="l">Consents Recorded</div></div><div class="dc b"><div class="n">100%</div><div class="l">Procurement Consent Rate</div></div><div class="dc a"><div class="n">92%</div><div class="l">Photo Upload Consent Rate</div></div><div class="dc k"><div class="n">v1.2</div><div class="l">Privacy Policy Version</div></div></div><div class="pan"><h3>Farmer Consent Log <span class="gw"></span><button class="db ed" onclick="toast('📄 Privacy Policy document opened')">View Policy Text</button></h3>${dataTable(['Farmer','Date/Time','Procurement Consent','Photo Upload Consent'],rows)}</div></div>`;}
+  else if(s==='branding'){c=topbar('Logo & Branding')+`<div class="ct2"><div class="pan"><h3>App Logo</h3><div style="display:flex;gap:20px;align-items:center"><div style="width:80px;height:80px;border-radius:16px;background:var(--s1);display:grid;place-items:center;font-size:40px">${APP_LOGO}</div><div style="flex:1"><label style="font-size:12px;color:var(--onv);font-weight:600;display:block;margin-bottom:6px">Logo (emoji or short mark)</label><input id="logoInp" value="${APP_LOGO}" style="padding:10px;border:1.5px solid var(--ov);border-radius:8px;font-size:20px;width:120px"><button class="db pri" style="margin-left:10px" onclick="setLogo($('logoInp').value);toast('✅ Logo updated across the app')">Save Logo</button></div></div><p style="font-size:12px;color:var(--onv);margin-top:14px">Updates instantly on the top bar and the Farmer app splash/language screens.</p></div><div class="pan"><h3>Brand Name & Slogan</h3><div class="fg"><div class="f"><label>Company Name</label><input value="Krinexa Agri"></div><div class="f"><label>Slogan</label><input value="ప్రతి రైతుకు నమ్మకమైన తోడు"></div></div><button class="db pri" style="margin-top:10px" onclick="toast('✅ Branding saved')">Save Branding</button></div></div>`;}
+  else if(s==='feedback'){const bar=(l,v,c2)=>`<div style="margin:10px 0"><div style="display:flex;justify-content:space-between;font-size:13px"><span>${l}</span><b>${v} / 5</b></div><div style="height:10px;background:#eee;border-radius:5px;overflow:hidden;margin-top:4px"><i style="display:block;height:100%;width:${v/5*100}%;background:${c2}"></i></div></div>`;c=topbar('Feedback & Satisfaction Analytics')+`<div class="ct2"><div class="dk"><div class="dc g"><div class="n">4.4★</div><div class="l">Overall Satisfaction</div></div><div class="dc b"><div class="n">2,840</div><div class="l">Feedback Collected</div></div><div class="dc a"><div class="n">86%</div><div class="l">Useful Rate</div></div><div class="dc t"><div class="n">+0.3</div><div class="l">vs Last Month</div></div></div><div class="g2 ev"><div class="pan"><h3>Satisfaction Scores</h3>${['Product Ratings|4.3|#2E7D32','Advisory Ratings|4.6|#1565C0','Delivery Ratings|4.1|#F9A825','Employee / Field Staff|4.4|#6A1B9A','FPO/FPC Satisfaction|4.2|#00695C'].map(x=>{const a=x.split('|');return bar(a[0],a[1],a[2]);}).join('')}</div><div class="pan"><h3>Recent Comments</h3>${[['రాములు','సలహా చాలా ఉపయోగపడింది 🙏','Advisory','s-ok'],['లక్ష్మి','డెలివరీ కొంచెం ఆలస్యం','Delivery','s-w'],['వెంకట్','ఉత్పత్తి బాగా పనిచేసింది','Product','s-ok']].map(c2=>`<div class="card fl" style="margin:8px 0"><div style="display:flex;justify-content:space-between"><b class="te" style="font-size:13px">${c2[0]}</b><span class="stt ${c2[3]}">${c2[2]}</span></div><p class="te" style="margin:6px 0 0;font-size:13px;color:var(--onv)">${c2[1]}</p></div>`).join('')}</div></div></div>`;}
+  stage().innerHTML=dashShell(nav,s,ctx,'adminNav',c);
+  setTimeout(()=>{const o=g=>({plugins:{legend:{display:g}},scales:{y:{beginAtZero:true},x:{grid:{display:false}}}});if(s==='master'&&!S.loading&&$('ms'))new Chart(ms,{type:'doughnut',data:{labels:['FPO Farmers','Individual'],datasets:[{data:[400,100],backgroundColor:['#2E7D32','#F9A825']}]},options:{plugins:{legend:{position:'bottom'}}}});if(s==='sla'&&$('sl'))new Chart(sl,{type:'line',data:{labels:['Mon','Tue','Wed','Thu','Fri','Sat'],datasets:[{label:'Advisory %',data:[94,96,93,97,96,98],borderColor:'#2E7D32',tension:.4},{label:'Order %',data:[90,92,89,93,92,94],borderColor:'#1565C0',tension:.4}]},options:o(true)});if(s==='inv'&&$('iv'))new Chart(iv,{type:'doughnut',data:{labels:['Pesticide','Fertilizer','Seed','Tool','Bio'],datasets:[{data:[340,310,232,90,70],backgroundColor:['#2E7D32','#66BB6A','#F9A825','#1565C0','#6A1B9A']}]},options:{plugins:{legend:{position:'bottom'}}}});if(s==='analytics'&&!S.loading){if($('tr'))new Chart(tr,{type:'bar',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Sales(₹K)',data:[120,145,180,210,240,265],backgroundColor:'#2E7D32',borderRadius:5},{type:'line',label:'Advisories(×100)',data:[80,95,120,150,170,189],borderColor:'#F9A825',tension:.4}]},options:o(true)});if($('cr'))new Chart(cr,{type:'bar',data:{labels:['Chilli','Paddy','Cotton','G.nut','Maize'],datasets:[{data:[1240,980,760,420,310],backgroundColor:'#2E7D32',borderRadius:5}]},options:{indexAxis:'y',...o(false)}});}},60);
+}
+function adminNav(s){go(s,null,['master','procctl','emp','prod','farmermaster','indivFarmers'].includes(s));}
+function admProdSearch(q){const t=$('apTbl');if(!t)return;const f=PRODUCTS.filter(p=>p.name.includes(q)||p.cat.toLowerCase().includes(q.toLowerCase())).slice(0,12);t.innerHTML=f.length?dataTable(['Photo','Name (TE/EN)','Category','SKU','Price','Stock','Status',''],f.map(p=>`<tr><td>${p.photo?'📷':p.e}</td><td class="te">${p.name} (${p.nameEn})</td><td>${p.cat}</td><td>${p.id}</td><td>₹${p.price}</td><td>${p.stk}</td><td><span class="stt ${p.stk>50?'s-ok':p.stk>0?'s-w':'s-bd'}">${p.stk>50?'In':p.stk>0?'Low':'Out'}</span></td><td></td></tr>`).join('')):empty('🔍','No products found','',null);}
+function admFarmerFilter(){
+  const dist=$('fmDist').value,mandal=$('fmMandal').value,village=$('fmVillage').value,type=$('fmType').value;
+  let list=FARMERS.filter(x=>{
+    if(dist&&x.dist!==dist)return false;
+    if(village&&x.village!==village)return false;
+    if(mandal&&mandalOf(x.village)!==mandal)return false;
+    if(type==='Individual'&&x.fpo!=='Individual')return false;
+    if(type==='FPO'&&x.fpo==='Individual')return false;
+    if(type&&type!=='FPO'&&type!=='Individual'&&x.fpo!==type)return false;
+    return true;
+  });
+  const t=$('fmTbl');
+  t.innerHTML=list.length?dataTable(['Farmer','ID','Village','District','FPO/Individual','Crop'],list.slice(0,30).map(x=>`<tr><td class="te">${x.name}</td><td style="color:#1B5E20;font-weight:700">${x.id}</td><td>${x.village}</td><td>${x.dist}</td><td class="te">${x.fpo}</td><td class="te">${x.crop[1]}</td></tr>`).join('')):empty('🔍','No farmers match these filters','',null);
+  toast('✅ Filters applied · '+list.length+' farmers found');
+}
+function exportFarmers(fmt){toast('⬇ Farmer Master exported as '+fmt.toUpperCase());}
+function addFpoForm(){
+  const d0=districts[0];
+  $('modalRoot').innerHTML=`<div class="modal"><div class="bx"><h3 style="margin:0 0 14px">Add FPO/FPC</h3><div class="fg">
+    <div class="f"><label>Name *</label><input id="fpoName"></div>
+    <div class="f"><label>Registration No *</label><input id="fpoReg"></div>
+    <div class="f"><label>Manager Name *</label><input id="fpoMgr"></div>
+    <div class="f"><label>Manager Mobile *</label><input id="fpoMob"></div>
+    <div class="f"><label>Manager Email</label><input id="fpoEmail"></div>
+    <div class="f"><label>Address</label><input id="fpoAddr"></div>
+    <div class="f"><label>District *</label><select id="fpoDist" onchange="fpoDistChanged()">${districts.map(d=>`<option>${d}</option>`).join('')}</select></div>
+    <div class="f"><label>Mandal *</label><select id="fpoMandal" onchange="fpoMandalChanged()">${MANDALS[d0].map(m=>`<option>${m}</option>`).join('')}</select></div>
+    <div class="f"><label>Village *</label><select id="fpoVillage">${(VILLAGE_MAP[MANDALS[d0][0]]||villages).map(v=>`<option>${v}</option>`).join('')}</select></div>
+    <div class="f"><label>Pincode *</label><input id="fpoPin" placeholder="502285"></div>
+  </div><div style="display:flex;gap:10px;margin-top:16px"><button class="db pri" onclick="saveFpo()">Save</button><button class="db no" onclick="closeModal()">Cancel</button></div></div></div>`;
+}
+function fpoDistChanged(){const d=$('fpoDist').value;$('fpoMandal').innerHTML=MANDALS[d].map(m=>`<option>${m}</option>`).join('');fpoMandalChanged();}
+function fpoMandalChanged(){const m=$('fpoMandal').value;$('fpoVillage').innerHTML=(VILLAGE_MAP[m]||villages).map(v=>`<option>${v}</option>`).join('');}
+function saveFpo(){
+  const req=['fpoName','fpoReg','fpoMgr','fpoMob','fpoDist','fpoMandal','fpoVillage','fpoPin'];
+  for(const id of req){const el=$(id);if(!el||!el.value.trim()){toast('⚠️ దయచేసి తప్పనిసరి ఫీల్డ్‌లను పూరించండి (all mandatory fields required)');return;}}
+  closeModal();toast('✅ FPO/FPC saved with District/Mandal/Village/Pincode');go('fpo',null,true);
+}
+function masterForm(title,fields){$('modalRoot').innerHTML=`<div class="modal"><div class="bx"><h3 style="margin:0 0 14px">Add ${title}</h3><div class="fg">${fields.map(f=>`<div class="f"><label>${f}</label><input></div>`).join('')}<div class="f"><label>Status</label><select><option>Active</option><option>Inactive</option></select></div></div><div style="display:flex;gap:10px;margin-top:16px"><button class="db pri" onclick="closeModal();toast('✅ ${title} saved')">Save</button><button class="db no" onclick="closeModal()">Cancel</button></div></div></div>`;}
+function empLocForm(){$('modalRoot').innerHTML=`<div class="modal"><div class="bx"><h3 style="margin:0 0 14px">Add Employee</h3><div class="fg"><div class="f"><label>Name</label><input></div><div class="f"><label>Mobile</label><input></div><div class="f"><label>Email</label><input></div><div class="f"><label>Designation</label><input></div></div><h4 style="margin:14px 0 8px;font-size:14px">Assigned Locations (multiple)</h4><div id="empLocRows">${empLocRow()}</div><button class="db ed" onclick="$('empLocRows').insertAdjacentHTML('beforeend',empLocRow())">＋ Add another location</button><div style="display:flex;gap:10px;margin-top:16px"><button class="db pri" onclick="closeModal();toast('✅ Employee saved with multiple locations')">Save</button><button class="db no" onclick="closeModal()">Cancel</button></div></div></div>`;}
+function empLocRow(){return `<div class="fg" style="margin-bottom:8px"><div class="f"><label>District</label><select>${districts.map(d=>`<option>${d}</option>`).join('')}</select></div><div class="f"><label>Mandal</label><select>${Object.values(MANDALS).flat().map(m=>`<option>${m}</option>`).join('')}</select></div><div class="f"><label>Village</label><select>${villages.map(v=>`<option>${v}</option>`).join('')}</select></div><div class="f"><label>Pincode</label><input placeholder="502285"></div></div>`;}
+function configDelivery(){renderDeliveryModal();}
+function renderDeliveryModal(){$('modalRoot').innerHTML=`<div class="modal"><div class="bx" style="max-width:460px"><h3 style="margin:0 0 4px">Configure Delivery Charges</h3><p style="font-size:12px;color:var(--onv);margin:0 0 14px">Set charge tiers by order value — applied automatically at farmer checkout</p><div id="dcRows">${DELIVERY_TIERS.map((t,i)=>`<div class="fg" style="margin-bottom:6px"><div class="f"><label>Min Order Value (₹)</label><input type="number" value="${t.min}" data-k="min" data-i="${i}"></div><div class="f"><label>Max Order Value (₹)</label><input type="number" value="${t.max}" data-k="max" data-i="${i}"></div><div class="f"><label>Charge (₹)</label><input type="number" value="${t.charge}" data-k="charge" data-i="${i}"></div></div>`).join('')}</div><button class="db ed" onclick="DELIVERY_TIERS.push({min:0,max:0,charge:0});renderDeliveryModal()">＋ Add Tier</button><div style="display:flex;gap:10px;margin-top:16px"><button class="db pri" onclick="saveDeliveryTiers()">Save</button><button class="db no" onclick="closeModal()">Cancel</button></div></div></div>`;}
+function saveDeliveryTiers(){document.querySelectorAll('#dcRows input').forEach(inp=>{const i=+inp.dataset.i,k=inp.dataset.k;DELIVERY_TIERS[i][k]=+inp.value||0;});closeModal();toast('✅ Delivery charge tiers updated');go('delivery')}
+function addProductForm(){
+  const sections=[
+    ['1. Basic Details','<div class="f"><label>Product Code</label><input id="pCode" value="KRX-'+(PRODUCTS.length+1)+'"></div><div class="f"><label>Name (EN) *</label><input id="pNameEn"></div><div class="f"><label>Name (TE) *</label><input id="pNameTe"></div><div class="f"><label>Category</label><select id="pCat">'+cats.map(c=>`<option>${c}</option>`).join('')+'</select></div><div class="f"><label>Brand</label><select id="pBrand">'+brands.map(c=>`<option>${c}</option>`).join('')+'</select></div><div class="f"><label>Manufacturer</label><select id="pMfr">'+mfrs.map(c=>`<option>${c}</option>`).join('')+'</select></div><div class="f"><label>Type</label><input id="pType" placeholder="e.g. Liquid, Granule"></div><div class="f"><label>Images</label><div class="pt" onclick="this.innerHTML=\'📷\';this.dataset.set=1" id="pImg">📷</div></div>'],
+    ['2. Description','<div class="f" style="grid-column:1/3"><label>Short Description</label><input id="pShort"></div><div class="f" style="grid-column:1/3"><label>Detailed Description</label><input id="pDetail"></div><div class="f"><label>Benefits</label><input id="pBenefits"></div><div class="f"><label>Features</label><input id="pFeatures"></div>'],
+    ['3. Pricing','<div class="f"><label>MRP (₹) *</label><input id="pMrp" type="number"></div><div class="f"><label>Selling Price (₹) *</label><input id="pPrice" type="number"></div><div class="f"><label>Discount (% / ₹)</label><input id="pDisc" placeholder="e.g. 12%"></div><div class="f"><label>GST %</label><input id="pGst" type="number" value="5"></div>'],
+    ['4. Packaging','<div class="f"><label>Pack Size</label><input id="pPack" placeholder="e.g. 500ml"></div><div class="f"><label>Unit</label><select id="pUnit"><option>ml</option><option>L</option><option>kg</option><option>g</option><option>pack</option></select></div>'],
+    ['5. Stock','<div class="f"><label>Available Stock *</label><input id="pStock" type="number"></div><div class="f"><label>Low Stock Alert Level</label><input id="pLow" type="number" value="20"></div><div class="f"><label>Warehouse</label><select id="pWh"><option>Medak WH-1</option><option>Siddipet WH-2</option></select></div>'],
+    ['6. Crop Recommendation','<div class="f" style="grid-column:1/3"><label>Suitable Crops (multi)</label><select id="pCrops" multiple>'+CROPLIST.map(c=>`<option>${c[0]}</option>`).join('')+'</select></div><div class="f"><label>Crop Stage</label><input id="pStage" placeholder="e.g. Flowering"></div><div class="f"><label>Season</label><select id="pSeason"><option>ఖరీఫ్</option><option>రబీ</option><option>జాయిద్</option></select></div>'],
+    ['7. Problem Solved','<div class="f" style="grid-column:1/3"><label>Problem Type (multi)</label><select id="pProblem" multiple>'+PROBLEMS.map(p=>`<option>${p}</option>`).join('')+'</select></div>'],
+    ['8. Usage','<div class="f"><label>Dosage / Acre</label><input id="pDoseAcre" placeholder="e.g. 400ml/ఎకరం"></div><div class="f"><label>Dosage / Tank</label><input id="pDoseTank" placeholder="e.g. 5ml/లీటరు"></div><div class="f"><label>Application Method</label><input id="pMethod"></div><div class="f"><label>Frequency</label><input id="pFreq" placeholder="e.g. every 10 days"></div><div class="f"><label>Waiting Period (days)</label><input id="pWait" type="number"></div>'],
+    ['9. Safety','<div class="f" style="grid-column:1/3"><label>Precautions</label><input id="pSafety"></div><div class="f"><label>Storage</label><input id="pStorage"></div><div class="f"><label>Expiry Date</label><input id="pExpiry" type="date"></div><div class="f"><label>Batch No.</label><input id="pBatch"></div>'],
+    ['10. Documents','<div class="f"><label>Brochure</label><button class="db ed" type="button" onclick="toast(\'📄 Brochure attached\')">Attach PDF</button></div><div class="f"><label>Label</label><button class="db ed" type="button" onclick="toast(\'📄 Label attached\')">Attach Image</button></div><div class="f"><label>SDS (Safety Data Sheet)</label><button class="db ed" type="button" onclick="toast(\'📄 SDS attached\')">Attach PDF</button></div>'],
+    ['11. Status','<div class="f"><label>Status</label><select id="pStatus"><option>Active</option><option>Inactive</option></select></div><div class="f"><label>Featured</label><select id="pFeat"><option>No</option><option>Yes</option></select></div><div class="f"><label>Best Seller</label><select id="pBest"><option>No</option><option>Yes</option></select></div>'],
+  ];
+  $('modalRoot').innerHTML=`<div class="modal"><div class="bx" style="max-width:640px"><h3 style="margin:0 0 4px">Add Product — 11 section schema</h3><p style="font-size:12px;color:var(--onv);margin:0 0 14px">Complete all sections · Farmer app only shows customer-facing fields (image, name, brand, pack size, price, discount, stock, key benefits, suitable crops, problem solved, dosage, how to use, safety, ratings, Add to Cart/Buy Now)</p>${sections.map(sec=>`<div style="margin:14px 0"><b style="font-size:13px;color:var(--primary)">${sec[0]}</b><div class="fg" style="margin-top:8px">${sec[1]}</div></div>`).join('')}<div style="display:flex;gap:10px;margin-top:16px"><button class="db pri" onclick="saveNewProduct()">Save Product</button><button class="db no" onclick="closeModal()">Cancel</button></div></div></div>`;
+}
+function saveNewProduct(){
+  const nameEn=$('pNameEn').value,nameTe=$('pNameTe').value,price=+$('pPrice').value,stock=+$('pStock').value;
+  if(!nameEn||!nameTe||!price||!stock){toast('⚠️ Basic Details, Pricing and Stock are mandatory');return;}
+  const mrp=+$('pMrp').value||price;
+  PRODUCTS.unshift({id:'P-'+(PRODUCTS.length+1),code:$('pCode').value,name:nameTe,nameEn:nameEn,e:'🧪',cat:$('pCat').value,brand:$('pBrand').value,mfr:$('pMfr').value,mrp:mrp,price:price,discount:Math.round((1-price/mrp)*100),gst:+$('pGst').value||5,stk:stock,lowAlert:+$('pLow').value||20,warehouse:$('pWh').value,crop:[...$('pCrops').selectedOptions].map(o=>o.value).join(', ')||'—',packSize:$('pPack').value||'—',unit:$('pUnit').value,dose:$('pDoseTank').value||'—',doseAcre:$('pDoseAcre').value||'—',method:$('pMethod').value||'—',frequency:$('pFreq').value||'—',safety:$('pSafety').value||'—',wait:($('pWait').value||0)+' రోజులు',eta:'2-4 రోజులు',benefits:$('pBenefits').value||'—',problem:[...$('pProblem').selectedOptions].map(o=>o.value).join(', ')||'—',rating:'4.0',reviews:0,featured:$('pFeat').value==='Yes',bestSeller:$('pBest').value==='Yes',photo:$('pImg').dataset.set?'set':null});
+  closeModal();notify('Product saved · syncing to Farmer app catalog');go('prod',null,true);
+}
+function advMon(i){const a=ADV[i],steps=['Open','Assigned','In Review','Recommendation Provided','Farmer Acknowledged','Closed'],idx=i%6;$('modalRoot').innerHTML=`<div class="modal"><div class="bx"><h3 style="margin:0 0 4px">${a.id} — Advisory Lifecycle <span class="stt s-m">Read-only</span></h3><p style="font-size:12px;color:var(--onv);margin:0 0 12px">Farmer: ${a.farmer} · Crop: ${a.crop} · Category: ${ADVCATS[i%4]} · SLA: ${a.sla} · Plot Area: ${a.plotArea}</p><div style="margin:8px 4px">${steps.map((st,k)=>tl(k<idx?'dn':k===idx?'cu':'',k<idx?'✓':k===idx?'●':k+1,st,'',k===steps.length-1)).join('')}</div><div class="pan"><h3>Farmer Request</h3><p class="te" style="font-size:13px;margin:0">ఆకులపై మచ్చలు, పంట దెబ్బతింటోంది.</p></div><div class="pan"><h3>Agronomist Recommendation</h3><p class="te" style="font-size:13px;margin:0">వేప నూనె 5ml/లీటరు పిచికారీ చేయండి. మాస్క్ ధరించండి.</p></div><button class="db pri" onclick="closeModal()">Close</button></div></div>`;}
+
+/* ===== shell ===== */
+function dashShell(nav,active,ctx,fn,content){const side=`<div class="side"><div class="br">${nav.br}</div><div class="cx">${ctx}</div>${nav.items.map(it=>it.g?`<div class="gl">${it.g}</div>`:`<a class="${active===it[0]?'on':''}" onclick="${fn}('${it[0]}')"><span>${it[1]}</span><span>${it[2]}</span></a>`).join('')}<div class="gl">Session</div><a onclick="setApp('${fn==='adminNav'?'admin':fn==='fpoNav'?'fpo':'agronomist'}',document.querySelector('#appseg .on'));toast('లాగ్అవుట్ అయ్యారు')"><span>🚪</span><span>Logout</span></a></div>`;return `<div class="dash fade">${side}<div class="main">${content}</div></div>`;}
+function topbar(title,right){return `<div class="tp"><h2>${title}</h2><div class="gw"></div>${right||''}<div class="av">K</div></div>`;}
+function loginScreen(title,fn,onok){window.__ok=onok;return `<div class="dash fade"><div class="main" style="max-height:none"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:560px;padding:24px"><div style="font-size:54px">${title.split(' ')[0]}</div><h2 style="margin:8px 0 20px">${title}</h2><div style="width:min(340px,90%)"><div class="fld"><label>Email / Mobile</label><div class="inp"><span>📧</span><input value="admin@krinexa.app"></div></div><div class="fld"><label>Password</label><div class="inp"><span>🔒</span><input type="password" value="••••••"></div></div><button class="btn" onclick="window.__ok()">Login ➤</button></div></div></div></div>`;}
+
+render();
+</script>
+
+<!-- ===== FINAL APP LAYER: responsive mobile + dashboard mobile nav + persistence ===== -->
+<style>
+/* Phone: farmer & field-staff apps go true full-screen (no demo bezel) */
+@media(max-width:560px){
+  .stage{padding:0;min-height:100dvh}
+  .phone{width:100%;height:100dvh;border-radius:0;box-shadow:none}
+  .sb{display:none}
+  .topbar{padding:6px 8px;gap:4px}
+  .topbar b{font-size:12px}
+  .seg button{padding:6px 8px;font-size:11px}
+  .tbtn{padding:5px 8px;font-size:11px}
+  .fab{bottom:88px}
+}
+/* Dashboards: stack vertically + horizontal menu when sidebar is hidden */
+.mnav{display:none}
+@media(max-width:760px){
+  .dash{flex-direction:column;border-radius:0;min-height:100dvh}
+  .main{max-height:none}
+  .mnav{display:flex;gap:6px;overflow-x:auto;padding:10px 12px;background:#1A1C19;-webkit-overflow-scrolling:touch}
+  .mnav::-webkit-scrollbar{height:0}
+  .mnav button{flex:0 0 auto;border:0;border-radius:999px;background:#2c2f2b;color:#cfd4cb;padding:8px 13px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+  .mnav button.on{background:var(--primary);color:#fff}
+  .ct2{padding:14px}
+  .tp{padding:12px 14px;flex-wrap:wrap}
+  .modal .bx{width:96%;padding:16px}
+}
+/* Big desktop screens: wider dashboards */
+@media(min-width:1500px){.dash{width:min(1400px,100%)}}
+</style>
+<script>
+(function(){
+  /* --- Mobile navigation for Agronomist / FPO / Admin dashboards --- */
+  const _dashShell=dashShell;
+  dashShell=function(nav,active,ctx,fn,content){
+    const items=nav.items.filter(it=>!it.g);
+    const mnav=`<div class="mnav">${items.map(it=>`<button class="${active===it[0]?'on':''}" onclick="${fn}('${it[0]}')">${it[1]} ${it[2]}</button>`).join('')}</div>`;
+    return _dashShell(nav,active,ctx,fn,content).replace('<div class="main">',mnav+'<div class="main">');
+  };
+
+  /* --- Official Krinexa logo (logo.svg) replaces the placeholder emoji --- */
+  const LOGO_IMG="<img src='logo.svg' alt='Krinexa' style='height:1.15em;vertical-align:-0.2em'>";
+  APP_LOGO=LOGO_IMG;
+  setLogo=function(v){APP_LOGO=(v&&v.trim())?v:LOGO_IMG;const ls=document.getElementById('logoSpan');if(ls)ls.innerHTML=APP_LOGO;render();};
+  document.getElementById('logoSpan').innerHTML=APP_LOGO;
+
+  /* --- Persistence: profile, orders, cart data survive refresh (localStorage) --- */
+  const KEY='krinexa_state_v1';
+  function saveState(){try{localStorage.setItem(KEY,JSON.stringify({farmerProfile:farmerProfile,myOrders:myOrders,addresses:addresses,consentGiven:consentGiven,CONSENTS:CONSENTS,DELIVERY_TIERS:DELIVERY_TIERS,APP_LOGO:APP_LOGO,FOLLOWUPS:FOLLOWUPS,langPicked:S.langPicked,langSel:S.langSel}));}catch(e){}}
+  function loadState(){try{
+    const d=JSON.parse(localStorage.getItem(KEY)||'null');if(!d)return;
+    if(d.farmerProfile)farmerProfile=d.farmerProfile;
+    if(d.myOrders&&d.myOrders.length)myOrders=d.myOrders;
+    if(d.addresses&&d.addresses.length)addresses=d.addresses;
+    consentGiven=!!d.consentGiven;
+    if(d.CONSENTS)CONSENTS=d.CONSENTS;
+    if(d.DELIVERY_TIERS&&d.DELIVERY_TIERS.length)DELIVERY_TIERS=d.DELIVERY_TIERS;
+    if(d.FOLLOWUPS)FOLLOWUPS=d.FOLLOWUPS;
+    if(d.APP_LOGO&&d.APP_LOGO!=='🌱'){APP_LOGO=d.APP_LOGO;const ls=document.getElementById('logoSpan');if(ls)ls.innerHTML=APP_LOGO;}
+    if(d.langPicked){S.langPicked=true;S.langSel=d.langSel;}
+  }catch(e){}}
+  const _render=render;
+  render=function(){_render();saveState();};
+  loadState();
+  if(S.app==='farmer'&&S.screen==='lang'&&S.langPicked)S.screen='welcome';
+  render();
+})();
+</script>
+
+<!-- ===== BACKEND SYNC LAYER: shared data across all devices (server.js) ===== -->
+<script>
+(function(){
+  if(!location.origin.startsWith('http'))return; /* opened as file:// → offline/local-only mode */
+  try{window.KRX_AUTH=JSON.parse(localStorage.getItem('krx_auth')||'null');}catch(e){window.KRX_AUTH=null;}
+  const rawJ=(m,u,b)=>fetch(u,{method:m,headers:Object.assign({'Content-Type':'application/json'},window.KRX_AUTH&&window.KRX_AUTH.token?{'x-auth':window.KRX_AUTH.token}:{}),body:b?JSON.stringify(b):undefined}).then(r=>r.json());
+  /* offline outbox: failed writes are queued and re-sent automatically when the connection returns */
+  const QKEY='krx_outbox';
+  let outbox=[];try{outbox=JSON.parse(localStorage.getItem(QKEY)||'[]');}catch(e){}
+  const saveQ=()=>{try{localStorage.setItem(QKEY,JSON.stringify(outbox));}catch(e){}};
+  const j=(m,u,b)=>rawJ(m,u,b).catch(()=>{
+    if(m!=='GET'&&u.indexOf('/api/auth/')!==0){outbox.push({m:m,u:u,b:b});saveQ();toast('📡 ఆఫ్‌లైన్ — కనెక్షన్ రాగానే స్వయంచాలకంగా పంపబడుతుంది');}
+    return null;
+  });
+  async function flushQ(){
+    if(!outbox.length)return;
+    while(outbox.length){
+      try{await rawJ(outbox[0].m,outbox[0].u,outbox[0].b);}catch(e){return;}
+      outbox.shift();saveQ();
+    }
+    toast('✅ ఆఫ్‌లైన్ డేటా సర్వర్‌కు పంపబడింది');
+  }
+  setInterval(flushQ,15000);
+  window.addEventListener('online',flushQ);
+  setTimeout(flushQ,2000);
+  window.krxJ=j;
+
+  /* --- Pull shared data from the server into every role's views --- */
+  function applyDb(db){
+    if(!db)return false;
+    let changed=false;
+    (db.farmers||[]).forEach(f=>{if(f.id&&!FARMERS.some(x=>x.id===f.id)){FARMERS.unshift(f);changed=true;}});
+    (db.orders||[]).forEach(o=>{const ex=o.id&&ORDERS.find(x=>x.id===o.id);if(ex){['status','payStatus'].forEach(k=>{if(o[k]!==undefined&&ex[k]!==o[k]){ex[k]=o[k];changed=true;}});}else if(o.id){ORDERS.unshift(o);changed=true;}});
+    (db.tickets||[]).forEach(t=>{const ex=t.id&&ADV.find(x=>x.id===t.id);if(ex){['status','remarks','outcome'].forEach(k=>{if(t[k]!==undefined&&ex[k]!==t[k]){ex[k]=t[k];changed=true;}});}else if(t.id){ADV.unshift(t);changed=true;}});
+    (db.consents||[]).forEach(c=>{if(!CONSENTS.some(x=>x.farmer===c.farmer&&x.date===c.date)){CONSENTS.push(c);changed=true;}});
+    (db.products||[]).forEach(p=>{const ex=PRODUCTS.find(x=>x.id===p.id);if(ex){if(ex.stk!==p.stk){ex.stk=p.stk;changed=true;}}else{PRODUCTS.unshift(p);changed=true;}});
+    if(db.config){
+      if(db.config.deliveryTiers&&db.config.deliveryTiers.length)DELIVERY_TIERS=db.config.deliveryTiers;
+      if(db.config.logo){APP_LOGO=db.config.logo;const ls=document.getElementById('logoSpan');if(ls)ls.innerHTML=APP_LOGO;}
+    }
+    return changed;
+  }
+  j('GET','/api/db').then(db=>{if(db){applyDb(db);render();}});
+
+  /* --- Live updates: poll every 25s, refresh only when it will not disturb the user --- */
+  setInterval(()=>{j('GET','/api/db').then(db=>{
+    if(!db)return;
+    const changed=applyDb(db);
+    const typing=document.activeElement&&['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName);
+    const modalOpen=document.querySelector('#modalRoot .modal');
+    if(changed&&!typing&&!modalOpen)render();
+  });},25000);
+
+  /* --- Push local actions to the server --- */
+  const _finishSignup=finishSignup;
+  finishSignup=function(){
+    _finishSignup();
+    if(farmerProfile)j('POST','/api/farmers',{id:farmerProfile.fid,name:farmerProfile.name,mobile:farmerProfile.mobile,email:farmerProfile.email||'',village:farmerProfile.village,mandal:farmerProfile.mandal,dist:farmerProfile.dist,pin:farmerProfile.pin,crop:[farmerProfile.cropIcon||'🌱',farmerProfile.crop],fpo:farmerProfile.fpo,acres:farmerProfile.acres,orders:0,adv:0,approved:true}).then(r=>{if(r&&r.token){window.KRX_AUTH={token:r.token,role:'farmer'};try{localStorage.setItem('krx_auth',JSON.stringify(window.KRX_AUTH));}catch(e){}}});
+  };
+
+  const _placeOrder=placeOrder;
+  placeOrder=function(tot){const qty=cart.length,prod=PRODUCTS[0];_placeOrder(tot);if(ORDERS.length){ORDERS[0].qty=qty;ORDERS[0].productId=prod?prod.id:'';j('POST','/api/orders',ORDERS[0]);}};
+
+  let lastTicketArea=null;
+  const _go2=go;
+  go=function(screen,params,isData){
+    _go2(screen,params,isData);
+    if(screen==='ticket'&&S.lastPlotArea&&S.lastPlotArea!==lastTicketArea){
+      lastTicketArea=S.lastPlotArea;
+      const t={id:'#AD-'+(2300+ADV.length),farmer:farmerProfile?farmerProfile.name:'రాములు రెడ్డి',crop:farmerProfile?farmerProfile.crop:'మిర్చి',status:'Open',sla:'24 గం',plotArea:S.lastPlotArea,remarks:'',photos:(window.__krxPhotos||[]).slice(0,3)};
+      ADV.unshift(t);
+      j('POST','/api/tickets',t);
+      window.__krxPhotos=[];
+    }
+  };
+
+  const _logConsent=logConsent;
+  logConsent=function(n){_logConsent(n);if(CONSENTS.length)j('POST','/api/consents',CONSENTS[CONSENTS.length-1]);};
+
+  const pushConfig=()=>j('PUT','/api/config',{deliveryTiers:DELIVERY_TIERS,logo:APP_LOGO});
+  const _saveDeliveryTiers=saveDeliveryTiers;
+  saveDeliveryTiers=function(){_saveDeliveryTiers();pushConfig();};
+  const _setLogo2=setLogo;
+  setLogo=function(v){_setLogo2(v);pushConfig();};
+
+  const _confirmOutcome=confirmOutcome;
+  confirmOutcome=function(i){const a=ADV[i];_confirmOutcome(i);if(a&&a.id)j('PATCH','/api/tickets/'+encodeURIComponent(a.id),{status:a.status,outcome:a.outcome||''});};
+
+  const _confirmOnlinePayment=confirmOnlinePayment;
+  confirmOnlinePayment=function(oi){const o=ORDERS[oi];_confirmOnlinePayment(oi);if(o&&o.id)j('PATCH','/api/orders/'+encodeURIComponent(o.id),{payStatus:'Paid'});};
+
+  /* Admin adds a product → it appears in every farmer's shop */
+  const _saveNewProduct=saveNewProduct;
+  saveNewProduct=function(){const before=PRODUCTS.length;_saveNewProduct();if(PRODUCTS.length>before)j('POST','/api/products',PRODUCTS[0]);};
+})();
+</script>
+
+<!-- ===== AUTH LAYER: real logins — OTP for farmers, password for staff (server.js) ===== -->
+<script>
+(function(){
+  if(!location.origin.startsWith('http'))return;
+  const j=window.krxJ;
+  function setAuth(a){window.KRX_AUTH=a;try{a?localStorage.setItem('krx_auth',JSON.stringify(a)):localStorage.removeItem('krx_auth');}catch(e){}}
+  function clearAuth(){if(window.KRX_AUTH)j('POST','/api/auth/logout');setAuth(null);}
+
+  /* --- Change Password (all staff roles) --- */
+  window.changePasswordForm=function(){
+    if(!window.KRX_AUTH||window.KRX_AUTH.role==='farmer'){toast('⚠️ Staff login required');return;}
+    $('modalRoot').innerHTML=`<div class="modal"><div class="bx" style="max-width:400px"><h3 style="margin:0 0 12px">🔑 Change Password</h3>
+      <div class="fld"><label>Current password</label><div class="inp"><span>🔒</span><input id="cpOld" type="password"></div></div>
+      <div class="fld"><label>New password (min 8 characters)</label><div class="inp"><span>🔑</span><input id="cpNew" type="password"></div></div>
+      <div class="fld"><label>Confirm new password</label><div class="inp"><span>🔑</span><input id="cpNew2" type="password"></div></div>
+      <div style="display:flex;gap:10px"><button class="btn" style="margin-top:0" onclick="submitPasswordChange()">Save</button><button class="db no" onclick="closeModal()">Cancel</button></div></div></div>`;
+  };
+  window.submitPasswordChange=async function(){
+    const o=$('cpOld').value,n=$('cpNew').value,n2=$('cpNew2').value;
+    if(n!==n2){toast('❌ New passwords do not match');return;}
+    if(n.length<8){toast('❌ Password must be at least 8 characters');return;}
+    const r=await j('POST','/api/auth/change-password',{oldPassword:o,newPassword:n});
+    if(r&&r.ok){closeModal();toast('✅ Password changed — use it from your next login');}
+    else toast(r&&r.error==='wrong_password'?'❌ Current password is wrong':'❌ Could not change password');
+  };
+  const _dashShell4=dashShell;
+  dashShell=function(nav,active,ctx,fn,content){
+    return _dashShell4(nav,active,ctx,fn,content)
+      .replace('<div class="gl">Session</div>','<div class="gl">Session</div><a onclick="changePasswordForm()"><span>🔑</span><span>Change Password</span></a>')
+      .replace('<div class="mnav">','<div class="mnav"><button onclick="changePasswordForm()">🔑 Password</button>');
+  };
+
+  /* farmers stay logged in on their device */
+  if(window.KRX_AUTH&&window.KRX_AUTH.role==='farmer'&&S.app==='farmer'&&farmerProfile&&(S.screen==='lang'||S.screen==='welcome'))S.screen='home';
+
+  /* logging out ends the session */
+  const _go3=go;
+  go=function(screen,params,isData){if(screen==='welcome'&&S.screen==='profile'&&window.KRX_AUTH&&window.KRX_AUTH.role==='farmer')clearAuth();_go3(screen,params,isData);};
+  const _setApp3=setApp;
+  setApp=function(app,btn){if(window.KRX_AUTH&&window.KRX_AUTH.role!=='farmer')clearAuth();_setApp3(app,btn);};
+
+  function enhance(){
+    /* --- Farmer: real OTP login --- */
+    if(S.app==='farmer'&&S.screen==='login'){
+      const body=document.querySelector('.phone .body');
+      if(!body||body.dataset.krxAuth)return;
+      body.dataset.krxAuth='1';
+      const inputs=body.querySelectorAll('.inp input');
+      const mobileInp=inputs[0],otpInp=inputs[1];
+      const send=document.createElement('button');
+      send.className='btn tonal te';send.textContent='📲 OTP పంపండి (Send OTP)';
+      mobileInp.closest('.fld').after(send);
+      send.onclick=async()=>{
+        const r=await j('POST','/api/auth/otp',{mobile:mobileInp.value});
+        if(r===null){toast('సర్వర్ అందుబాటులో లేదు — డెమో మోడ్');return;}
+        if(!r.ok){toast(r.error==='not_registered'?'⚠️ ఈ నంబర్ నమోదు కాలేదు — ముందుగా నమోదు చేసుకోండి':'⚠️ సరైన మొబైల్ నంబర్ ఇవ్వండి');return;}
+        toast('✅ OTP పంపబడింది'+(r.demo_otp?'\n(డెమో OTP: '+r.demo_otp+')':''));
+      };
+      const loginBtn=[...body.querySelectorAll('button')].find(b=>b.textContent.trim().startsWith('లాగిన్'));
+      if(loginBtn)loginBtn.onclick=async()=>{
+        const r=await j('POST','/api/auth/verify',{mobile:mobileInp.value,otp:otpInp.value});
+        if(r===null){go('home');return;}
+        if(!r.ok){toast('❌ OTP తప్పు లేదా గడువు ముగిసింది');return;}
+        setAuth({token:r.token,role:'farmer'});
+        if(r.farmer)farmerProfile={fid:r.farmer.id,name:r.farmer.name,mobile:r.farmer.mobile,email:r.farmer.email||'',state:'తెలంగాణ',dist:r.farmer.dist,mandal:r.farmer.mandal,village:r.farmer.village,pin:r.farmer.pin,fpo:r.farmer.fpo,crop:Array.isArray(r.farmer.crop)?r.farmer.crop[1]:r.farmer.crop,cropIcon:Array.isArray(r.farmer.crop)?r.farmer.crop[0]:'🌱',acres:r.farmer.acres};
+        toast('✅ స్వాగతం, '+(farmerProfile?farmerProfile.name:'')+' గారు');
+        go('home');
+      };
+    }
+    /* --- Field staff: real password login --- */
+    if(S.app==='field'&&S.screen==='login'){
+      const body=document.querySelector('.phone .body');
+      if(!body||body.dataset.krxAuth)return;
+      body.dataset.krxAuth='1';
+      const inputs=body.querySelectorAll('.inp input');
+      if(inputs[1])inputs[1].value='';
+      const loginBtn=[...body.querySelectorAll('button')].find(b=>b.textContent.trim().startsWith('లాగిన్'));
+      if(loginBtn)loginBtn.onclick=async()=>{
+        const r=await j('POST','/api/auth/login',{user:inputs[0].value,password:inputs[1].value});
+        if(r===null){go('home');return;}
+        if(!r.ok){toast('❌ తప్పు ID లేదా పాస్‌వర్డ్');return;}
+        setAuth({token:r.token,role:r.user.role,user:r.user});
+        toast('✅ Welcome, '+r.user.name);
+        go('home');
+      };
+    }
+    /* --- Field staff home: change-password shortcut --- */
+    if(S.app==='field'&&S.screen==='home'&&window.KRX_AUTH&&window.KRX_AUTH.role!=='farmer'){
+      const ab=document.querySelector('.phone .ab');
+      if(ab&&!ab.querySelector('.krx-key')){const b=document.createElement('button');b.className='ib krx-key';b.textContent='🔑';b.title='Change password';b.onclick=window.changePasswordForm;ab.appendChild(b);}
+    }
+    /* --- Dashboards (agronomist / fpo / admin): real password login --- */
+    if(S.screen==='login'&&['agronomist','fpo','admin'].includes(S.app)&&typeof window.__ok==='function'&&!window.__ok.krxWrapped){
+      const inputs=document.querySelectorAll('.dash .inp input');
+      if(inputs[1])inputs[1].value='';
+      const orig=window.__ok;
+      const wrapped=async function(){
+        const ins=document.querySelectorAll('.dash .inp input');
+        const r=await j('POST','/api/auth/login',{user:ins[0]?ins[0].value:'',password:ins[1]?ins[1].value:''});
+        if(r===null){orig();return;}
+        if(!r.ok){toast('❌ Invalid email or password');return;}
+        setAuth({token:r.token,role:r.user.role,user:r.user});
+        orig();
+      };
+      wrapped.krxWrapped=true;
+      window.__ok=wrapped;
+    }
+  }
+  const _render4=render;
+  render=function(){_render4();try{enhance()}catch(e){}};
+  enhance();
+})();
+</script>
+
+<!-- ===== REAL CART + EMPLOYEE ACCOUNTS LAYER ===== -->
+<script>
+(function(){
+  /* cart entries become {id, qty} of actual products */
+  cart=[];
+
+  window.krxAdd=function(id){const ex=cart.find(it=>it.id===id);if(ex)ex.qty++;else cart.push({id:id,qty:1});notify('కార్ట్‌లో జోడించబడింది');};
+  window.krxQty=function(i,d){cart[i].qty=Math.max(1,cart[i].qty+d);go('cart');};
+  function cartCount(){return cart.reduce((s,it)=>s+it.qty,0);}
+  function cartTotal(){let t=0;cart.forEach(it=>{const p=PRODUCTS.find(x=>x.id===it.id);if(p)t+=p.price*it.qty;});return t;}
+
+  /* shop rows add the actual product */
+  prodRow=function(p){const idx=PRODUCTS.indexOf(p);return `<div class="prod"><div class="pi" onclick="go('product',PRODUCTS[${idx}])">${p.e}</div><div class="pn" onclick="go('product',PRODUCTS[${idx}])"><b class="te">${p.name}</b> <span style="font-size:11px;color:var(--onv)">(${p.nameEn||''})</span><div class="pr">₹${p.price}</div><span class="sbad ${p.stk?'sb-ok':'sb-no'} te">${p.stk?'నిల్వలో':'నిల్వ లేదు'}</span></div><div style="display:flex;flex-direction:column;gap:6px"><button class="addb te" onclick="event.stopPropagation();window.__krxPid='${p.id}';requireConsent(()=>{krxAdd(window.__krxPid);farmerNav('shop')})">కార్ట్</button><button class="addb te" style="background:var(--info)" onclick="event.stopPropagation();window.__krxPid='${p.id}';requireConsent(()=>{krxAdd(window.__krxPid);go('cart')})">కొనండి</button></div></div>`;};
+
+  /* real cart screen: actual items, quantity controls, correct totals */
+  function paintCart(){
+    const t=cartTotal(),g=Math.round(t*.05),dc=cart.length?getDeliveryCharge(t):0,tot=t+g+dc;
+    const def=addresses.find(a=>a.def)||addresses[0];
+    let body;
+    if(!cart.length)body=empty('🛒','మీ కార్ట్ ఖాళీగా ఉంది','ఉత్పత్తులు చూడండి',"go('shop',null,true)");
+    else{
+      const rows=cart.map((it,i)=>{const p=PRODUCTS.find(x=>x.id===it.id)||{name:'',nameEn:'',price:0,e:'🛢️'};return `<div class="prod"><div class="pi">${p.e}</div><div class="pn"><b class="te">${p.name}</b> <span style="font-size:11px;color:var(--onv)">(${p.nameEn||''})</span><div class="pr">₹${p.price} × ${it.qty} = ₹${p.price*it.qty}</div></div><div style="display:flex;gap:2px;align-items:center"><button class="ib" style="width:34px;height:34px" onclick="krxQty(${i},-1)">−</button><b>${it.qty}</b><button class="ib" style="width:34px;height:34px" onclick="krxQty(${i},1)">＋</button><button class="ib" style="width:34px;height:34px" onclick="cart.splice(${i},1);go('cart')">🗑️</button></div></div>`;}).join('');
+      body=rows+
+      `<div class="card fl"><div style="display:flex;justify-content:space-between;align-items:center"><b class="te" style="font-size:13px">📍 డెలివరీ చిరునామా</b><button class="ib" onclick="go('addaddr')">✏️</button></div><p class="te" style="margin:6px 0 0;font-size:13px;color:var(--onv)">${def?def.label+' — '+def.line+' · '+def.pin:'చిరునామా లేదు'}</p><button class="btn gh te" style="margin-top:2px;padding:6px" onclick="go('addaddr')">＋ కొత్త చిరునామా జోడించండి</button></div>
+      <div class="fld"><label class="te">చెల్లింపు విధానం</label><div class="chiprow" id="payMethods">${['💳 క్రెడిట్ కార్డ్','💳 డెబిట్ కార్డ్','📱 UPI','💵 క్యాష్ ఆన్ డెలివరీ'].map((m,i)=>`<div class="chip ${i==2?'on':''} te" onclick="selC(this)">${m}</div>`).join('')}</div></div>
+      <div class="card fl"><div style="display:flex;justify-content:space-between" class="te"><span>ఉప మొత్తం (${cartCount()} వస్తువులు)</span><b>₹${t}</b></div><div style="display:flex;justify-content:space-between;margin-top:6px" class="te"><span>GST 5%</span><b>₹${g}</b></div><div style="display:flex;justify-content:space-between;margin-top:6px" class="te"><span>డెలివరీ ఛార్జీ ${dc===0?'(ఉచితం)':''}</span><b>₹${dc}</b></div><hr style="border:0;border-top:1px solid var(--ov);margin:10px 0"><div style="display:flex;justify-content:space-between;font-size:18px" class="te"><b>మొత్తం</b><b style="color:var(--primary)">₹${tot}</b></div></div>
+      <button class="btn te" onclick="krxPlaceOrder()">ఆర్డర్ చేయండి</button>`;
+    }
+    const inner=`<div class="ab"><button class="ib" onclick="go('shop')">←</button><div class="ti te" style="font-size:18px">మీ కార్ట్</div></div><div class="body">${body}</div>`;
+    stage().innerHTML=phone(inner,true,'farmerNav',fNav);
+  }
+
+  window.krxPlaceOrder=function(){
+    if(!cart.length)return;
+    const method=document.querySelector('#payMethods .on'),isCOD=method&&method.textContent.includes('క్యాష్');
+    const t=cartTotal(),g=Math.round(t*.05),dc=getDeliveryCharge(t),tot=t+g+dc;
+    const names=cart.map(it=>{const p=PRODUCTS.find(x=>x.id===it.id)||{name:''};return p.name+' × '+it.qty;}).join(', ');
+    const lineItems=cart.map(it=>({productId:it.id,qty:it.qty}));
+    const id='#A-'+(2380+myOrders.length+1);
+    const newOrd={id:id,product:names,items:names,amt:tot,status:'Booked',eta:'రేపు',payStatus:isCOD?'COD Pending':'Paid'};
+    myOrders.unshift(newOrd);
+    lineItems.forEach(li=>{const p=PRODUCTS.find(x=>x.id===li.productId);if(p)p.stk=Math.max(0,p.stk-li.qty);});
+    ORDERS.unshift({id:id,farmer:farmerProfile?farmerProfile.name:'రాములు రెడ్డి',village:farmerProfile?farmerProfile.village:'Kondapur',items:cartCount()+' వస్తువులు',amt:'₹'+tot,status:'Booked',ftype:farmerProfile&&farmerProfile.fpo==='Individual'?'Individual':'FPO',product:names,payStatus:newOrd.payStatus,lineItems:lineItems,qty:cartCount()});
+    if(window.krxJ)window.krxJ('POST','/api/orders',ORDERS[0]);
+    cart=[];
+    notify('ఆర్డర్ '+id+' బుక్ అయింది');
+    go('tracking');
+  };
+
+  /* Admin → Add Employee now also creates a real login */
+  empLocForm=function(){$('modalRoot').innerHTML=`<div class="modal"><div class="bx"><h3 style="margin:0 0 14px">Add Employee</h3><div class="fg"><div class="f"><label>Name *</label><input id="empName"></div><div class="f"><label>Mobile</label><input id="empMob"></div><div class="f"><label>Email (login ID) *</label><input id="empEmail" placeholder="name@krinexa.app"></div><div class="f"><label>Employee ID</label><input id="empId2" placeholder="EMP-41"></div><div class="f"><label>Role *</label><select id="empRole"><option value="field">Field Officer</option><option value="agronomist">Agronomist</option><option value="fpo">FPO Manager</option><option value="admin">Admin</option></select></div><div class="f"><label>Password (min 8) *</label><input id="empPw" type="password"></div></div><h4 style="margin:14px 0 8px;font-size:14px">Assigned Locations (multiple)</h4><div id="empLocRows">${empLocRow()}</div><button class="db ed" onclick="$('empLocRows').insertAdjacentHTML('beforeend',empLocRow())">＋ Add another location</button><div style="display:flex;gap:10px;margin-top:16px"><button class="db pri" onclick="krxSaveEmployee()">Save & Create Login</button><button class="db no" onclick="closeModal()">Cancel</button></div></div></div>`;};
+  window.krxSaveEmployee=async function(){
+    const name=$('empName').value.trim(),email=$('empEmail').value.trim(),pw=$('empPw').value,role=$('empRole').value,empId=$('empId2').value.trim();
+    if(!name||!email){toast('⚠️ Name and Email are required');return;}
+    if(pw.length<8){toast('⚠️ Password must be at least 8 characters');return;}
+    let created=true;
+    if(window.krxJ){
+      const r=await window.krxJ('POST','/api/users',{name:name,email:email,password:pw,role:role,empId:empId});
+      if(r&&!r.ok){toast(r.error==='exists'?'❌ An account with this email already exists':r.error==='admin_only'?'❌ Only Admin can create logins':'❌ Could not create login');created=false;}
+    }
+    if(!created)return;
+    EMP.unshift({id:empId||('EMP-'+(EMP.length+41)),name:name,role:role==='field'?'Field Officer':role==='agronomist'?'Agronomist':role==='fpo'?'FPO Manager':'Admin',dept:'Operations',locs:[{dist:districts[0],mandal:MANDALS[districts[0]][0],village:villages[0],pin:'502285'}],fpo:'—',status:'Active'});
+    closeModal();notify('Employee saved · login created ('+email+')');go('emp',null,true);
+  };
+
+  /* Admin → Product Mgmt → Edit: real edit modal, synced to server */
+  window.krxEditProduct=function(pid){
+    const p=PRODUCTS.find(x=>x.id===pid);if(!p)return;
+    $('modalRoot').innerHTML=`<div class="modal"><div class="bx" style="max-width:440px"><h3 style="margin:0 0 4px">Edit Product</h3><p class="te" style="font-size:13px;color:var(--onv);margin:0 0 14px">${p.name} (${p.nameEn||''}) · ${p.id}</p><div class="fg"><div class="f"><label>Selling Price (₹)</label><input id="epPrice" type="number" value="${p.price}"></div><div class="f"><label>MRP (₹)</label><input id="epMrp" type="number" value="${p.mrp}"></div><div class="f"><label>Stock</label><input id="epStk" type="number" value="${p.stk}"></div><div class="f"><label>Low-stock alert level</label><input id="epLow" type="number" value="${p.lowAlert||20}"></div></div><div style="display:flex;gap:10px;margin-top:16px"><button class="db pri" onclick="krxSaveProductEdit('${p.id}')">Save</button><button class="db no" onclick="closeModal()">Cancel</button></div></div></div>`;
+  };
+  window.krxSaveProductEdit=function(pid){
+    const p=PRODUCTS.find(x=>x.id===pid);if(!p)return;
+    p.price=+$('epPrice').value||p.price;p.mrp=+$('epMrp').value||p.mrp;p.stk=Math.max(0,+$('epStk').value||0);p.lowAlert=+$('epLow').value||p.lowAlert;
+    p.discount=Math.round((1-p.price/p.mrp)*100);
+    if(window.krxJ)window.krxJ('PATCH','/api/products/'+encodeURIComponent(p.id),{price:p.price,mrp:p.mrp,stk:p.stk,lowAlert:p.lowAlert,discount:p.discount});
+    closeModal();notify('Product updated · synced to farmer shop');go('prod',null,true);
+  };
+
+  /* route the farmer cart screen to the real cart; rebind screens after render */
+  const _render6=render;
+  render=function(){
+    if(S.app==='farmer'&&S.screen==='cart'){paintCart();return;}
+    _render6();
+    try{
+      /* product page: add/buy the actual product */
+      if(S.app==='farmer'&&S.screen==='product'){
+        const p=S.params||PRODUCTS[0];
+        const btns=[...document.querySelectorAll('.phone .body button')];
+        const addB=btns.find(b=>b.textContent.includes('కార్ట్‌కు జోడించండి'));
+        const buyB=btns.find(b=>b.textContent.includes('ఇప్పుడే కొనండి'));
+        if(addB)addB.onclick=function(){window.__krxPid=p.id;requireConsent(()=>{krxAdd(window.__krxPid);render();});};
+        if(buyB)buyB.onclick=function(){window.__krxPid=p.id;requireConsent(()=>{krxAdd(window.__krxPid);go('cart');});};
+      }
+      /* tracking + delivered screens show the farmer's real latest order */
+      if(S.app==='farmer'&&S.screen==='tracking'&&myOrders.length){
+        const o=myOrders[0];
+        const b=document.querySelector('.phone .body .card b.te');
+        if(b){b.textContent=o.items;const sub=b.nextElementSibling;if(sub)sub.textContent=o.id+' · ₹'+o.amt;}
+      }
+      if(S.app==='farmer'&&S.screen==='delivered'&&myOrders.length){
+        const o=myOrders[0];
+        const pEl=document.querySelector('.phone .body p.te');
+        if(pEl)pEl.textContent=o.items+' · '+o.id;
+      }
+      /* agronomist "Provide Recommendation" closes the loop across devices */
+      if(S.app==='agronomist'&&S.screen==='ticket'){
+        const i=(S.params&&S.params.i)||0,a=ADV[i];
+        const btn=[...document.querySelectorAll('.main button')].find(b=>b.textContent.includes('Provide Recommendation'));
+        if(btn&&a)btn.onclick=function(){
+          a.remarks=$('remarksInp')?$('remarksInp').value:'';
+          a.status='Recommendation Provided';
+          S.lastRemarks=a.remarks;
+          if(window.krxJ&&a.id)window.krxJ('PATCH','/api/tickets/'+encodeURIComponent(a.id),{status:a.status,remarks:a.remarks});
+          toast('✅ Recommendation Provided · Farmer & Field Staff notified');
+          go('queue',null,true);
+        };
+      }
+      /* admin product table: working Edit buttons */
+      if(S.app==='admin'&&S.screen==='prod'){
+        document.querySelectorAll('#apTbl tbody tr').forEach(function(tr,i){
+          const btn=tr.querySelector('button.db.ok');
+          if(btn&&PRODUCTS[i])btn.onclick=function(ev){ev.stopPropagation();krxEditProduct(PRODUCTS[i].id);};
+        });
+      }
+    }catch(e){}
+  };
+})();
+</script>
+
+<!-- ===== PHOTOS + REPORT EXPORTS LAYER ===== -->
+<script>
+(function(){
+  /* --- Real crop photo uploads (camera/gallery, compressed on-device, max 3) --- */
+  window.__krxPhotos=[];
+  addAskPhoto=function(el){
+    if(window.__krxPhotos.length>=3){toast('⚠️ గరిష్టంగా 3 ఫోటోలు');return;}
+    const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+    inp.onchange=function(){
+      const f=inp.files&&inp.files[0];if(!f)return;
+      const rd=new FileReader();
+      rd.onload=function(){
+        const img=new Image();
+        img.onload=function(){
+          const c=document.createElement('canvas'),s=Math.min(1,640/Math.max(img.width,img.height));
+          c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);
+          c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+          const data=c.toDataURL('image/jpeg',0.6);
+          window.__krxPhotos.push(data);
+          el.innerHTML='<img src="'+data+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px">';
+          el.onclick=null;
+          const row=$('photoRow'),add=document.createElement('div');
+          add.className='pt';add.textContent='＋';add.onclick=function(){addAskPhoto(this)};
+          row.appendChild(add);
+          toast('📷 ఫోటో జోడించబడింది');
+        };
+        img.src=rd.result;
+      };
+      rd.readAsDataURL(f);
+    };
+    inp.click();
+  };
+
+  /* --- Working report exports: CSV (opens in Excel) + printable PDF --- */
+  window.krxDownloadCSV=function(name,rows){
+    const csv='﻿'+rows.map(r=>r.map(v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"').join(',')).join('\r\n');
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name+'_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+    toast('⬇ '+name+'.csv downloaded (opens in Excel)');
+  };
+  window.krxPrintTable=function(title,rows){
+    const w=window.open('','_blank');if(!w){toast('⚠️ Allow pop-ups to print');return;}
+    w.document.write('<html><head><title>'+title+'</title><style>body{font-family:Segoe UI,Noto Sans Telugu,sans-serif;padding:24px}h2{color:#2E7D32}table{border-collapse:collapse;width:100%;font-size:12px}td,th{border:1px solid #999;padding:6px;text-align:left}th{background:#E8F5E9}</style></head><body><h2>Krinexa Agri — '+title+'</h2><table>'+rows.map(function(r,i){return '<tr>'+r.map(function(c){return (i?'<td>':'<th>')+c+(i?'</td>':'</th>');}).join('')+'</tr>';}).join('')+'</table><scr'+'ipt>print()</scr'+'ipt></body></html>');
+    w.document.close();
+  };
+  function csvFarmers(){const rows=[['Farmer ID','Name','Mobile','Village','Mandal','District','FPO/Individual','Crop','Acres','Orders']];FARMERS.forEach(f=>rows.push([f.id,f.name,f.mobile||'',f.village,mandalOf(f.village),f.dist,f.fpo,Array.isArray(f.crop)?f.crop[1]:f.crop,f.acres,f.orders]));return rows;}
+  function csvOrders(){const rows=[['Order ID','Farmer','Village','Items','Amount','Status','Payment']];ORDERS.slice(0,300).forEach(o=>rows.push([o.id,o.farmer,o.village,o.items,o.amt,o.status,o.payStatus||'']));return rows;}
+  function csvCrops(){const m={};FARMERS.forEach(f=>{const c=Array.isArray(f.crop)?f.crop[1]:f.crop;m[c]=(m[c]||0)+1;});return [['Crop','Farmers']].concat(Object.entries(m));}
+  function csvProc(){const rows=[['Request','FPO/FPC','Products','Value','Status']];PROC.forEach(p=>rows.push([p.id,p.fpo,p.prod,p.val,p.status]));return rows;}
+  exportFarmers=function(fmt){const rows=csvFarmers();if(fmt==='pdf')krxPrintTable('Farmer Master',rows);else krxDownloadCSV('Krinexa_Farmer_Master',rows);};
+
+  const _r7=render;
+  render=function(){
+    _r7();
+    try{
+      /* new advisory request starts with an empty photo set */
+      if(S.app==='farmer'&&S.screen==='ask')window.__krxPhotos=[];
+      /* agronomist sees the farmer's real photos on the ticket */
+      if(S.app==='agronomist'&&S.screen==='ticket'){
+        const a=ADV[(S.params&&S.params.i)||0];
+        if(a&&a.photos&&a.photos.length){
+          const pts=[...document.querySelectorAll('.main .pt')];
+          pts.forEach(function(el,k){if(a.photos[k])el.innerHTML='<img src="'+a.photos[k]+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px">';});
+        }
+      }
+      /* FPO reports: PDF/Excel buttons work */
+      if(S.app==='fpo'&&S.screen==='reports'&&!S.loading){
+        const sets=[['Farmer Performance',csvFarmers],['Crop Analytics',csvCrops],['Procurement',csvProc],['Sales',csvOrders]];
+        [...document.querySelectorAll('.main .pan')].forEach(function(pan,i){
+          if(!sets[i])return;
+          const btns=pan.querySelectorAll('button');
+          if(btns[0])btns[0].onclick=function(){krxPrintTable(sets[i][0],sets[i][1]());};
+          if(btns[1])btns[1].onclick=function(){krxDownloadCSV('Krinexa_'+sets[i][0].replace(/ /g,'_'),sets[i][1]());};
+        });
+      }
+    }catch(e){}
+  };
+})();
+</script>
+</body>
+</html>

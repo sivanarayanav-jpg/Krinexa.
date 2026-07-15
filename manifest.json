@@ -1,0 +1,15 @@
+{
+  "name": "Krinexa Agri",
+  "short_name": "Krinexa",
+  "description": "ప్రతి రైతుకు నమ్మకమైన తోడు — Farmer advisory & agri-inputs app",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FBFDF7",
+  "theme_color": "#2E7D32",
+  "lang": "te",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

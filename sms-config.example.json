@@ -1,0 +1,9 @@
+{
+  "_instructions": "To send real SMS OTPs: copy this file to sms-config.json, fill in your gateway details, restart the server. While sms-config.json is absent the app runs in demo mode (OTP shown on screen).",
+  "_option_1_msg91": { "provider": "msg91", "authKey": "YOUR-MSG91-AUTH-KEY", "templateId": "YOUR-DLT-TEMPLATE-ID" },
+  "_option_2_any_gateway_via_webhook": { "provider": "webhook", "url": "https://your-gateway.example.com/send" },
+
+  "provider": "msg91",
+  "authKey": "PASTE-YOUR-AUTH-KEY-HERE",
+  "templateId": "PASTE-YOUR-TEMPLATE-ID-HERE"
+}
