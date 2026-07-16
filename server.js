@@ -99,10 +99,66 @@ function pruneSessions() {
 }
 pruneSessions();
 
+/*
+ * Optional permanent cloud database (Supabase). Set two environment variables
+ * (in the Render dashboard) and all data survives every restart/redeploy:
+ *   SUPABASE_URL          e.g. https://abcd1234.supabase.co
+ *   SUPABASE_SERVICE_KEY  the project's service_role key (server-side secret)
+ * One-time table setup (Supabase → SQL Editor → run):
+ *   create table if not exists krinexa_store (
+ *     id text primary key, data jsonb, updated_at timestamptz default now());
+ * Without these vars the server just uses the local JSON file as before.
+ */
+const SUPA_URL = (process.env.SUPABASE_URL || '').replace(/\/+$/, '');
+const SUPA_KEY = process.env.SUPABASE_SERVICE_KEY || '';
+const CLOUD = !!(SUPA_URL && SUPA_KEY);
+function supaReq(method, pathq, body) {
+  return new Promise((resolve) => {
+    try {
+      const mod = require(SUPA_URL.startsWith('https') ? 'https' : 'http');
+      const payload = body ? JSON.stringify(body) : null;
+      const req2 = mod.request(SUPA_URL + '/rest/v1/' + pathq, {
+        method: method,
+        headers: Object.assign({
+          'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY,
+          'Content-Type': 'application/json'
+        }, method === 'POST' ? { 'Prefer': 'resolution=merge-duplicates' } : {})
+      }, r => { let buf = ''; r.on('data', d => buf += d); r.on('end', () => resolve({ status: r.statusCode, body: buf })); });
+      req2.on('error', () => resolve(null));
+      if (payload) req2.write(payload);
+      req2.end();
+    } catch (e) { resolve(null); }
+  });
+}
+let cloudTimer = null;
+function cloudSave() {
+  if (!CLOUD) return;
+  clearTimeout(cloudTimer);
+  cloudTimer = setTimeout(() => {
+    supaReq('POST', 'krinexa_store?on_conflict=id', [{ id: 'main', data: db }]).then(r => {
+      if (r && r.status >= 400) console.log('  [cloud] save failed HTTP ' + r.status + ': ' + String(r.body).slice(0, 140));
+    });
+  }, 1500);
+}
+async function cloudLoad() {
+  if (!CLOUD) return;
+  const r = await supaReq('GET', 'krinexa_store?id=eq.main&select=data');
+  if (r && r.status === 200) {
+    try {
+      const rows = JSON.parse(r.body);
+      if (rows.length && rows[0].data) { Object.assign(db, rows[0].data); console.log('  [cloud] permanent database loaded (Supabase)'); }
+      else { console.log('  [cloud] connected — empty store, will fill on first write'); cloudSave(); }
+      return;
+    } catch (e) {}
+  }
+  console.log('  [cloud] WARNING: could not reach Supabase (HTTP ' + (r ? r.status : 'network') + ') — running on local file only');
+}
+
 let saveTimer = null;
 function persist() {
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => fs.writeFile(DB_FILE, JSON.stringify(db, null, 1), () => {}), 200);
+  cloudSave(); // mirrors to the permanent cloud database when configured
 }
 persist(); // write seeded users on first run
 
@@ -309,7 +365,7 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(PORT, '0.0.0.0', () => {
+cloudLoad().then(() => server.listen(PORT, '0.0.0.0', () => {
   console.log('');
   console.log('  Krinexa Agri server is running');
   console.log('  ------------------------------');
@@ -318,10 +374,11 @@ server.listen(PORT, '0.0.0.0', () => {
     .filter(i => i && i.family === 'IPv4' && !i.internal)
     .forEach(i => console.log('  On a phone (same Wi-Fi):  http://' + i.address + ':' + PORT));
   console.log('');
+  console.log('  Data storage: ' + (CLOUD ? 'permanent cloud database (Supabase) + local file' : 'local file only (set SUPABASE_URL + SUPABASE_SERVICE_KEY for permanence)'));
   console.log('  Staff logins (default password: ' + DEFAULT_PASSWORD + ')');
   db.users.forEach(u => console.log('    ' + u.role.padEnd(11) + ' ' + u.email + (u.empId ? '  (or ' + u.empId + ')' : '')));
   console.log('');
   console.log('  Farmer login: OTPs appear in this window when requested.');
   console.log('  Database file: ' + DB_FILE);
   console.log('  Press Ctrl+C to stop.');
-});
+}));
