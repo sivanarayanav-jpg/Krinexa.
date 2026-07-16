@@ -745,12 +745,27 @@ render();
     }
     return changed;
   }
-  j('GET','/api/db').then(db=>{if(db){applyDb(db);render();}});
+  /* self-healing: if the server ever loses this farmer's data (e.g. free-tier
+     hosting reset), the phone re-registers its own profile and orders */
+  let healAt=0;
+  function selfHeal(db){
+    if(!farmerProfile||!db||!db.farmers)return;
+    if(db.farmers.some(f=>f.id===farmerProfile.fid))return;
+    if(Date.now()-healAt<60000)return;
+    healAt=Date.now();
+    j('POST','/api/farmers',{id:farmerProfile.fid,name:farmerProfile.name,mobile:farmerProfile.mobile,email:farmerProfile.email||'',village:farmerProfile.village,mandal:farmerProfile.mandal,dist:farmerProfile.dist,pin:farmerProfile.pin,crop:[farmerProfile.cropIcon||'🌱',farmerProfile.crop],fpo:farmerProfile.fpo,acres:farmerProfile.acres,orders:0,adv:0,approved:true}).then(r=>{
+      if(r&&r.token){window.KRX_AUTH={token:r.token,role:'farmer'};try{localStorage.setItem('krx_auth',JSON.stringify(window.KRX_AUTH));}catch(e){}}
+      if(r&&(r.ok||r.dup))toast('🔄 మీ ఖాతా సర్వర్‌కు తిరిగి సమకాలీకరించబడింది');
+    });
+    myOrders.forEach(o=>{if(!db.orders.some(x=>x.id===o.id))j('POST','/api/orders',{id:o.id,farmer:farmerProfile.name,village:farmerProfile.village,items:o.items,amt:'₹'+o.amt,status:o.status,ftype:farmerProfile.fpo==='Individual'?'Individual':'FPO',product:o.product,payStatus:o.payStatus,lineItems:o.lineItems||[]});});
+  }
+  j('GET','/api/db').then(db=>{if(db){applyDb(db);selfHeal(db);render();}});
 
   /* --- Live updates: poll every 25s, refresh only when it will not disturb the user --- */
   setInterval(()=>{j('GET','/api/db').then(db=>{
     if(!db)return;
     const changed=applyDb(db);
+    selfHeal(db);
     const typing=document.activeElement&&['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName);
     const modalOpen=document.querySelector('#modalRoot .modal');
     if(changed&&!typing&&!modalOpen)render();
