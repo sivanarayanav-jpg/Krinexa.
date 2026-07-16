@@ -109,7 +109,7 @@ pruneSessions();
  *     id text primary key, data jsonb, updated_at timestamptz default now());
  * Without these vars the server just uses the local JSON file as before.
  */
-const SUPA_URL = (process.env.SUPABASE_URL || '').replace(/\/+$/, '');
+const SUPA_URL = (process.env.SUPABASE_URL || '').replace(/\/+$/, '').replace(/\/rest\/v1$/, ''); // accepts the base URL or the full /rest/v1/ address
 const SUPA_KEY = process.env.SUPABASE_SERVICE_KEY || '';
 const CLOUD = !!(SUPA_URL && SUPA_KEY);
 function supaReq(method, pathq, body) {
