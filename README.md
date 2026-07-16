@@ -2,6 +2,8 @@
 
 ప్రతి రైతుకు నమ్మకమైన తోడు · 5-role agri platform (Farmer, Field Staff, Agronomist, FPO Portal, Krinexa Admin).
 
+**🌐 Live:** https://krinexa.onrender.com (deploys automatically from the `main` branch of github.com/sivanarayanav-jpg/Krinexa.)
+
 ## Run it (recommended — with shared data)
 
 **Double-click `start-app.bat`** (needs Node.js, already installed on this PC).
@@ -66,6 +68,7 @@ Admin → Employee Mgmt → **＋ Add Employee** now creates a real login (email
 - If the connection drops, farmer and staff actions (orders, tickets, updates) are **queued on the device and sent automatically** when the network returns — a toast confirms both.
 - Dashboards merge live status changes (e.g. an agronomist's recommendation reaches the farmer's app and the field staff queue within ~25 seconds, on every device).
 - **One mobile number = one farmer account** — duplicate registrations are refused, so OTP login is never ambiguous.
+- **Self-healing after server resets:** on free-tier hosting the server database can be wiped when the instance restarts. Each farmer's phone keeps its own profile and orders, and automatically re-registers them (with a fresh login session) the next time the app opens or within 25 seconds if it's already open. Admin-added products/config still reset — use a persistent disk or hosted database for a full pilot.
 
 ## Deploy to the internet (when ready)
 
