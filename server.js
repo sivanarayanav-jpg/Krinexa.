@@ -112,6 +112,8 @@ pruneSessions();
 const SUPA_URL = (process.env.SUPABASE_URL || '').replace(/\/+$/, '').replace(/\/rest\/v1$/, ''); // accepts the base URL or the full /rest/v1/ address
 const SUPA_KEY = process.env.SUPABASE_SERVICE_KEY || '';
 const CLOUD = !!(SUPA_URL && SUPA_KEY);
+let cloudOk = false;
+const STARTED_AT = new Date().toISOString();
 function supaReq(method, pathq, body) {
   return new Promise((resolve) => {
     try {
@@ -146,6 +148,7 @@ async function cloudLoad() {
   if (r && r.status === 200) {
     try {
       const rows = JSON.parse(r.body);
+      cloudOk = true;
       if (rows.length && rows[0].data) { Object.assign(db, rows[0].data); console.log('  [cloud] permanent database loaded (Supabase)'); }
       else { console.log('  [cloud] connected — empty store, will fill on first write'); cloudSave(); }
       return;
@@ -213,6 +216,17 @@ const server = http.createServer((req, res) => {
       const session = getSession(req);
 
       if (p.startsWith('/api/auth/') && rateLimited(req)) return send(res, 429, { ok: false, error: 'too_many_requests' });
+
+      /* --- public health/status (no secrets: only a connected yes/no + counts) --- */
+      if (req.method === 'GET' && p === '/api/status') {
+        return send(res, 200, {
+          ok: true,
+          storage: CLOUD ? 'cloud' : 'local',
+          cloudConnected: CLOUD && cloudOk,
+          counts: { farmers: db.farmers.length, orders: db.orders.length, products: db.products.length, staff: db.users.length },
+          startedAt: STARTED_AT
+        });
+      }
 
       /* --- public: shared data (users/sessions never leave the server) --- */
       if (req.method === 'GET' && p === '/api/db') {
